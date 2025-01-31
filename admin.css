@@ -1,0 +1,162 @@
+:root {
+    --accent-color: rgb(43, 133, 71); /* Grønn farge */
+    --base-color: rgb(103, 131, 90);  /* Base farge for bakgrunn og knapper */
+    --text-color: rgb(179, 215, 144); /* Lys grønn tekstfarge */
+    --input-color: rgb(71, 135, 95);  /* Farge for input-feltene */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12pt;
+    color: var(--text-color);
+    text-align: center;
+}
+
+body {
+    min-height: 100vh;
+    background-image: url('background.jpg'); /* Bruk et bakgrunnsbilde som passer */
+    background-position: center;
+    background-size: cover;
+    background-color: goldenrod;
+}
+
+.menu-bar {
+    background-color: #fffbfb;
+    padding: 20px 0;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.menu-list {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    justify-content: flex-start;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.menu-list li {
+    margin: 0 30px;
+}
+
+.menu-list li a {
+    color: rgb(13, 13, 13);
+    text-decoration: none;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 20px;
+    transition: color 0.3s ease;
+}
+
+.menu-list li a:hover {
+    color: #000000;
+}
+
+.logo a {
+    font-weight: bold;
+    font-size: 25px !important;
+    color: #9ea008 !important;
+}
+
+.wrapper {
+    background-color: var(--base-color);
+    height: 100vh;
+    width: max(40%, 500px);
+    padding: 10px;
+    border-radius: 0 20px 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.content-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.form-section {
+    max-width: 400px;
+    width: 100%;
+}
+
+h1 {
+    color: white;
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+form input {
+    padding: 1em;
+    font-size: 1rem;
+    border-radius: 10px;
+    border: 2px solid var(--base-color);
+    transition: border-color 0.3s ease;
+    background-color: var(--text-color);
+}
+
+form input:focus {
+    border-color: var(--accent-color);
+    outline: none;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: rgb(0, 13, 0);
+}
+
+p a {
+    text-decoration: underline;
+    color: white;
+    font-weight: bold;
+}
+
+p a:hover {
+    color: #000;
+}
+
+@media (max-width: 600px) {
+    .menu-list {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .menu-list li {
+        margin: 5px 0;
+    }
+
+    .form-section {
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+}
