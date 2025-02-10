@@ -7,6 +7,7 @@ const express = require("express");
 const mongoose = require("mongoose"); 
 const cors = require("cors"); 
 const next = require("next"); 
+const router = express.Router();
 
 // Check if environment is dev or prod
 const dev = process.env.NODE_ENV !== "production";
@@ -15,7 +16,7 @@ const handle = app.getRequestHandler();
 
 // Prepare Next.js start Express server
 app.prepare().then(() => {
-  const server = express(); // Express.js server
+  const server = express();
 
   // Middleware 
   server.use(cors()); // Enable CORS
@@ -24,7 +25,7 @@ app.prepare().then(() => {
   // MongoDB Connection
   const mongoURI = process.env.MONGODB_URI; // Get  URI fra .env
   if (!mongoURI) {
-    console.error("Error: Missing MONGODB_URI in environment variables."); // Log if URI is missing //viktig for local dev, men kan kommenters ut i prod, URI er lagret i heroku
+    console.error("Error: Missing MONGODB_URI in environment variables."); // Log if URI is missing //viktig for local dev, men kan kommenters ut i prod, siden URI er lagret i heroku
     process.exit(1); // Exit process failure 
   }
 
@@ -38,7 +39,7 @@ app.prepare().then(() => {
 
   // API Route for schemas
   const Membership = require("./api/Membership"); // Import schema model
-  const User = require("./api/User");
+  const FormModel = require("./api/User");
 
   //API endpoint for memberships
   server.get("/api/memberships", async (req, res) => {
@@ -51,6 +52,26 @@ app.prepare().then(() => {
     }
   });
 
+  //API endpoint for form submission 
+  router.post("/submit", async (req, res) => {
+    try {
+        const { name, email, message } = req.body;
+
+        if (!name || !email || !message) {
+            return res.status(400).json({ error: "All fields are required." });
+        }
+
+        const newForm = new FormModel({ name, email, message });
+        await newForm.save();
+
+        res.status(201).json({ message: "Form submitted successfully!" });
+    } catch (error) {
+        console.error("Form submission error:", error);
+        res.status(500).json({ error: "Error submitting form" });
+    }
+});
+
+
   //chatgpt hjalp med oppstart i heroku
   // Håndterer routes with Next.js
   server.all("*", (req, res) => {
@@ -61,6 +82,6 @@ app.prepare().then(() => {
   const PORT = process.env.PORT || 5000;
   server.listen(PORT, (err) => {
     if (err) throw err; // Throw error
-    console.log(`🚀 Server running on http://localhost:${PORT}`); //uccess message
+    console.log(`🚀 Server running on http://localhost:${PORT}`); //success message
   });
 });

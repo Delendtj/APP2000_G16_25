@@ -2,6 +2,7 @@
 // Get all form elements
 const form = document.getElementById('form');
 const firstname_input = document.getElementById('firstname-input');
+const lastName_input = document.getElementById('lastname');
 const email_input = document.getElementById('email-input');
 const password_input = document.getElementById('password-input');
 const repeat_password_input = document.getElementById('repeat-password');
@@ -51,6 +52,33 @@ form.addEventListener('submit', function(e) {
     // hvis det er ikke noen errors da submitter vi formen
     if(!hasErrors) {
         form.submit();
+    }
+});
+
+form.addEventListener("submit", async function (event) {
+       const formData = {
+        name: document.getElementById("firstname").value,
+        email: document.getElementById("lastname").value,
+        message: document.getElementById("email-imput").value,
+        message: document.getElementById("password-input").value,
+        message: document.getElementById("repeat-password").value,
+    };
+
+    try {
+        const response = await fetch("http://localhost:5000/api/User", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+        alert(data.message || "Form submitted successfully!");
+        document.getElementById("contactForm").reset();
+    } catch (error) {
+        console.error("Error submitting form:", error);
+        alert("Failed to submit form.");
     }
 });
 
