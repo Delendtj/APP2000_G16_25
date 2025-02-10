@@ -7,7 +7,7 @@ const express = require("express");
 const mongoose = require("mongoose"); 
 const cors = require("cors"); 
 const next = require("next"); 
-const router = express.Router();
+const router = require("./module/auth");
 
 // Check if environment is dev or prod
 const dev = process.env.NODE_ENV !== "production";
@@ -38,8 +38,8 @@ app.prepare().then(() => {
     });
 
   // API Route for schemas
-  const Membership = require("./api/Membership"); // Import schema model
-  const User = require("./api/User");
+  const Membership = require("./models/Membership"); // Import schema model
+  const User = require("./models/User");
 
   //API endpoint for memberships
   server.get("/api/memberships", async (req, res) => {
@@ -89,6 +89,8 @@ server.get("/api/users", async (req, res) => {
   }
 });
 
+
+server.use("/api", router); 
 
   //chatgpt hjalp med oppstart i heroku
   // Håndterer routes with Next.js

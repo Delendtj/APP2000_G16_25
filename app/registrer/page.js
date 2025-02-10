@@ -13,6 +13,7 @@ export default function Logginn() {
         password: "",
     });
 
+    //dette er chat sin kok
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
@@ -21,7 +22,12 @@ export default function Logginn() {
         e.preventDefault();
 
         try {
-            const response = await fetch("http://localhost:5000/api/users", {
+            const baseUrl =
+            process.env.NODE_ENV === 'production'
+              ? 'https://vast-mesa-22158-90c21fc001d1.herokuapp.com'  // Heroku APP URL
+              : 'http://localhost:5000';  // Local URL for dev
+  
+            const response = await fetch(`${baseUrl}/api/users`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -112,7 +118,7 @@ export default function Logginn() {
                                     onChange={handleChange}
                                 />
                             </div>
-                            <button type="submit">Logg inn</button>
+                            <button type="submit">Registrer</button>
                         </form>
                         <p>Har allerede en Konto?</p>
                     </div>
