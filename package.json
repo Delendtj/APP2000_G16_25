@@ -5,8 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "start": "node server.js",
+    "heroku-postbuild": "cd app && npm install && npm run build"
+  },
+  "engines": {
+    "node": "18.x"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -15,7 +19,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mongoose": "^8.9.5",
-    "next": "15.1.6",
+    "next": "^15.1.6",
+    "next-auth": "^4.24.11",  
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

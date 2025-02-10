@@ -1,33 +1,49 @@
-'use client';
+//DL
+
+'use client'; // client component in Next.js
 
 import React, { useState, useEffect } from 'react';
 
 const MembershipList = () => {
-  const [memberships, setMemberships] = useState([]); // ✅ Default value as an empty array
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // State to store membership data
+  const [memberships, setMemberships] = useState([]); // Default state
+  const [loading, setLoading] = useState(true); // loading state
+  const [error, setError] = useState(null); // error state
 
   useEffect(() => {
     const fetchMemberships = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/memberships');
+        // Determine the API base URL based on the environment
+        const baseUrl =
+          process.env.NODE_ENV === 'production'
+            ? 'https://vast-mesa-22158-90c21fc001d1.herokuapp.com/'  // Heroku APP URL
+            : 'http://localhost:5000';  // Local URL for dev
+
+        // Fetch data 
+        const response = await fetch(`${baseUrl}/api/memberships`);
+        
+        // Check response
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
+        // Parse JSON response
         const data = await response.json();
-        setMemberships(data); // ✅ Ensure it's always an array
+        setMemberships(data); // Update state with fetched data
       } catch (err) {
-        setError(err.message);
+        setError(err.message); //error state
       } finally {
-        setLoading(false);
+        setLoading(false); //loading state update
       }
     };
 
-    fetchMemberships();
-  }, []);
+    fetchMemberships(); // Call the function
+  }, []); // Empty array run once
 
+  //loading message
   if (loading) return <p>Loading memberships...</p>;
+
+  //error message
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -51,12 +67,12 @@ const MembershipList = () => {
                 <td>{membership.clubId}</td>
                 <td>{membership.membershipId}</td>
                 <td>{membership.membershipStatus}</td>
-                <td>{new Date(membership.joinDate).toLocaleDateString()}</td>
+                <td>{new Date(membership.joinDate).toLocaleDateString()}</td> 
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="5">No memberships found.</td>
+              <td colSpan="5">No memberships found.</td> 
             </tr>
           )}
         </tbody>
@@ -65,4 +81,4 @@ const MembershipList = () => {
   );
 };
 
-export default MembershipList;
+export default MembershipList; 
