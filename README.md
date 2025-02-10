@@ -7,7 +7,9 @@ npm install dotenv
 LAG EN .ENV fil med 
 
 NODE_ENV=development
+
 localhost:5000
+
 MONGODB_URI='mongodb+srv://admin:admin1@cluster0.wqcxd.mongodb.net/Disgolfdb'
 
 node server.js 
