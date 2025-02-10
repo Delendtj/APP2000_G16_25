@@ -16,7 +16,7 @@ const MembershipList = () => {
         // Determine the API base URL based on the environment
         const baseUrl =
           process.env.NODE_ENV === 'production'
-            ? 'https://vast-mesa-22158-90c21fc001d1.herokuapp.com/'  // Heroku APP URL
+            ? 'https://vast-mesa-22158-90c21fc001d1.herokuapp.com'  // Heroku APP URL
             : 'http://localhost:5000';  // Local URL for dev
 
         // Fetch data 
@@ -26,7 +26,7 @@ const MembershipList = () => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
+console.log('API Base URL:', baseUrl);
         // Parse JSON response
         const data = await response.json();
         setMemberships(data); // Update state with fetched data
@@ -36,7 +36,7 @@ const MembershipList = () => {
         setLoading(false); //loading state update
       }
     };
-
+    
     fetchMemberships(); // Call the function
   }, []); // Empty array run once
 

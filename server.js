@@ -39,7 +39,7 @@ app.prepare().then(() => {
 
   // API Route for schemas
   const Membership = require("./api/Membership"); // Import schema model
-  const FormModel = require("./api/User");
+  const User = require("./api/User");
 
   //API endpoint for memberships
   server.get("/api/memberships", async (req, res) => {
@@ -53,22 +53,40 @@ app.prepare().then(() => {
   });
 
   //API endpoint for form submission 
-  router.post("/submit", async (req, res) => {
+  server.post("/api/users", async (req, res) => {
     try {
-        const { name, email, message } = req.body;
+        const { firstName, lastName, email, passwordHash } = req.body;
 
-        if (!name || !email || !message) {
+        if (!firstName || !lastName || !email || !passwordHash) {
             return res.status(400).json({ error: "All fields are required." });
         }
 
-        const newForm = new FormModel({ name, email, message });
-        await newForm.save();
+        // Check if email already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ error: "Email already exists." });
+        }
 
-        res.status(201).json({ message: "Form submitted successfully!" });
+        // Create new user
+        const newUser = new User({ firstName, lastName, email, passwordHash });
+        await newUser.save();
+
+        res.status(201).json({ message: "User registered successfully!" });
     } catch (error) {
-        console.error("Form submission error:", error);
-        res.status(500).json({ error: "Error submitting form" });
+        console.error("Registration Error:", error);
+        res.status(500).json({ error: "Server error. Try again later." });
     }
+});
+
+
+server.get("/api/users", async (req, res) => {
+  try {
+      const users = await User.find({}, "-passwordhash"); // Exclude passwordhash for security
+      return res.status(200).json(users);
+  } catch (error) {
+      console.error("Error fetching users:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 
@@ -82,6 +100,6 @@ app.prepare().then(() => {
   const PORT = process.env.PORT || 5000;
   server.listen(PORT, (err) => {
     if (err) throw err; // Throw error
-    console.log(`🚀 Server running on http://localhost:${PORT}`); //success message
+    console.log(`Server running on http://localhost:${PORT}`); //success message
   });
 });
