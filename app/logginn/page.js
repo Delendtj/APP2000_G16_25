@@ -33,12 +33,12 @@ const handleSubmit = async (e) => {
         });
 
         const data = await response.json();
-        console.log("Parsed response data:", data); // Debugging step
+        console.log("Parsed response data:", data); // Debugging 
 
-        // Check if the login was successful by looking for the _id in the response
+        
         if (response.ok && data._id) {
-            login(data);  // Set user data globally
-            router.push("/profil");  // Redirect to profile page
+            login(data);  // 
+            router.push("/profil");  // force Redirect til profile page
         } else {
             setError(data.error || "Login failed.");
         }
