@@ -14,6 +14,9 @@ const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev }); // Next.js dev mode
 const handle = app.getRequestHandler(); 
 
+
+const updateProfileRoute = require('./module/logroute'); // Adjust path
+  
 // Prepare Next.js start Express server
 app.prepare().then(() => {
   const server = express();
@@ -41,6 +44,7 @@ app.prepare().then(() => {
   const Membership = require("./models/Membership"); // Import schema model
   const User = require("./models/User");
 
+  
   //API endpoint for memberships
   server.get("/api/memberships", async (req, res) => {
     try {
@@ -77,6 +81,8 @@ app.prepare().then(() => {
         res.status(500).json({ error: "Server error. Try again later." });
     }
 });
+
+server.use('/api', updateProfileRoute);
 
 
 server.get("/api/users", async (req, res) => {

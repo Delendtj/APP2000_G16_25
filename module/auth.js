@@ -10,20 +10,25 @@ router.post("/login", async (req, res) => {
   if (!email || !password) {
     return res.status(400).json({ error: "Email and password are required." });
   }
+  
   try { 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ error: "Invalid" });
+      return res.status(400).json({ error: "Invalid email or password." });
     }
 
-    
+    // Verify password
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
-      return res.status(400).json({ error: "Invalid" });
+      return res.status(400).json({ error: "Invalid email or password." });
     }
 
-    
-    res.status(200).json({ message: "Logged in"});
+res.status(200).json({
+      
+        _id: user._id,
+        email: user.email,
+        name: user.firstName + " " + user.lastName,
+    });
 
   } catch (error) {
     console.error("Login Error:", error);
