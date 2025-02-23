@@ -38,7 +38,6 @@ const handleSubmit = async (e) => {
         
         if (response.ok && data._id) {
             login(data);  // 
-            router.push("/profil");  // force Redirect til profile page
         } else {
             setError(data.error || "Login failed.");
         }

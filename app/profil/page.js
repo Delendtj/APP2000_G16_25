@@ -4,20 +4,28 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Profile() {
-    const { user, logout, setUser } = useAuth();  // Use setUser to update the context
+    const { user, logout, setUser } = useAuth(); 
     const router = useRouter();
-    const [name, setName] = useState(user?.name || "");
+    
+    // Initialize state with user data
+    const [firstName, setFirstName] = useState(user?.firstName || "");
+    const [lastName, setLastName] = useState(user?.lastName || "");
     const [email, setEmail] = useState(user?.email || "");
     const [message, setMessage] = useState("");
 
-    
-console.log("User in Profile:", user); // Log to verify user object
-
+    console.log("User in Profile:", user); // log
 
     const handleUpdate = async (e) => {
         e.preventDefault();
-        setMessage(""); // Reset message before updating
-        console.log({ _id, name, email });
+        setMessage(""); 
+
+        if (!user?._id) {
+            setMessage("User ID is missing. Please log in again.");
+            return;
+        }
+
+        console.log({ _id: user._id, firstName, lastName, email }); // Debugging log
+
         try {
             const response = await fetch("/api/update-profile", {
                 method: "PUT",
@@ -25,30 +33,22 @@ console.log("User in Profile:", user); // Log to verify user object
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ 
-                    _id,  // Send the user ID
-                    name, 
-                    email 
+                    _id: user._id,  // Retrieve _id from user object
+                    firstName,  
+                    lastName,  
+                    email
                 }),
             });
-    
+
             const data = await response.json();
-    
+
             if (response.ok) {
                 setMessage("Profile updated successfully!");
-                
-                // After a successful update, update the global user context and localStorage
-                setUser({
-                    ...user, // Retain other user data
-                    name,
-                    email
-                });
 
-                // Optionally store updated user data back into localStorage
-                localStorage.setItem("user", JSON.stringify({ 
-                    ...user, 
-                    name,
-                    email
-                }));
+                // Update the global user context and localStorage
+                const updatedUser = { ...user, firstName, lastName, email };
+                setUser(updatedUser);
+                localStorage.setItem("user", JSON.stringify(updatedUser));
             } else {
                 setMessage(data.error || "Update failed.");
             }
@@ -56,23 +56,28 @@ console.log("User in Profile:", user); // Log to verify user object
             setMessage("An error occurred. Please try again.");
         }
     };
-    
-    
 
     return (
         <div>
             <h1>Welcome, {user?.name}</h1>
             <p>Email: {user?.email}</p>
 
-             ///   får ikke sent tilbake _id til databasen, implemente en JWT eller annen type authentication løsning -DL
-
             <form onSubmit={handleUpdate}>
                 <label>
-                    Name:
+                    First Name:
                     <input
                         type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                    />
+                </label>
+                <br />
+                <label>
+                    Last Name:
+                    <input
+                        type="text"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
                     />
                 </label>
                 <br />

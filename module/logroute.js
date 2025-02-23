@@ -5,10 +5,12 @@ const router = express.Router();
 
 // Update profile route
 router.put("/update-profile", async (req, res) => {
-    const { _id, name, email } = req.body;
+    const { _id, firstName, lastName, email } = req.body;
 
-    if (!name || !email) {
-        return res.status(400).json({ error: "Name and email are required." });
+    console.log("Received _id:", _id); // Debugging log
+
+    if (!firstName || !lastName || !email) {
+        return res.status(400).json({ error: "First name, last name, and email are required." });
     }
 
     if (!_id) {
@@ -16,15 +18,16 @@ router.put("/update-profile", async (req, res) => {
     }
 
     try {
-        const updatedUser = await User.findByIdAndUpdate(
-            _id, // Use the _id passed from the frontend
-            { name, email },
-            { new: true } // Return the updated document
-        );
-
-        if (!updatedUser) {
+        const userExists = await User.findById(_id);
+        if (!userExists) {
             return res.status(404).json({ error: "User not found" });
         }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            _id,
+            { firstName, lastName, email },
+            { new: true } // Return the updated document
+        );
 
         res.status(200).json({
             message: "Profile updated successfully!",
@@ -35,7 +38,5 @@ router.put("/update-profile", async (req, res) => {
         res.status(500).json({ error: "Server error" });
     }
 });
-
-
 
 module.exports = router;

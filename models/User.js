@@ -6,7 +6,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         unique: true, 
         required: [true, "Epost er nødvendig"],
-        match : [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, "Epost er ugyldig"],},
+        match : [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, "Epost er ugyldig"],},  //Match fra chatgpt 
 
   firstName: { type: String, required: true }, 
   lastName: { type: String, required: true }, 
