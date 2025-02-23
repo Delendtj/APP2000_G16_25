@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
         if (storedUser) {
             try {
                 const parsedUser = JSON.parse(storedUser);
-                if (parsedUser && parsedUser.email && parsedUser.name) { // Ensure user data is valid
+                if (parsedUser && parsedUser.firstName && parsedUser.lastName && parsedUser.email) { // Ensure user data is valid
                     setUser(parsedUser); // Set user if valid
                 } else {
                     throw new Error("Invalid user data");
@@ -27,7 +27,7 @@ export function AuthProvider({ children }) {
     }, []);
 
     const login = (userData) => {
-        if (userData && userData.email && userData.name) { // Ensure valid user data before saving
+        if (userData && userData.firstName && userData.lastName && userData.email) { // Ensure valid user data before saving
             setUser(userData);
             localStorage.setItem("user", JSON.stringify(userData)); // Save valid user data
             router.push("/profil"); // Redirect after login

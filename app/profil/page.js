@@ -1,30 +1,42 @@
 'use client';
 import { useAuth } from "../../module/context";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Profile() {
-    const { user, logout, setUser } = useAuth(); 
+    const { user, logout, setUser } = useAuth();  
     const router = useRouter();
-    
-    // Initialize state with user data
-    const [firstName, setFirstName] = useState(user?.firstName || "");
-    const [lastName, setLastName] = useState(user?.lastName || "");
-    const [email, setEmail] = useState(user?.email || "");
-    const [message, setMessage] = useState("");
 
-    console.log("User in Profile:", user); // log
+    // Initialize state from localStorage
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+    const [message, setMessage] = useState("");
+    const [staticFirstName, setHeaderFirstName] = useState(""); 
+    const [staticLastName, setHeaderLastName] = useState("");
+
+    // Load user data from localStorage on component mount
+    useEffect(() => {
+        const storedUser = JSON.parse(localStorage.getItem("user"));
+        if (storedUser) {
+            setHeaderFirstName(storedUser.firstName || ""); 
+            setHeaderLastName(storedUser.lastName || "");
+            setFirstName(storedUser.firstName || "");
+            setLastName(storedUser.lastName || "");
+            setEmail(storedUser.email || "");
+        }
+    }, []);
 
     const handleUpdate = async (e) => {
         e.preventDefault();
-        setMessage(""); 
+        setMessage("");
 
         if (!user?._id) {
             setMessage("User ID is missing. Please log in again.");
             return;
         }
 
-        console.log({ _id: user._id, firstName, lastName, email }); // Debugging log
+        console.log("Sending update request with:", { _id: user._id, firstName, lastName, email });
 
         try {
             const response = await fetch("/api/update-profile", {
@@ -33,7 +45,7 @@ export default function Profile() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ 
-                    _id: user._id,  // Retrieve _id from user object
+                    _id: user._id,  
                     firstName,  
                     lastName,  
                     email
@@ -45,7 +57,7 @@ export default function Profile() {
             if (response.ok) {
                 setMessage("Profile updated successfully!");
 
-                // Update the global user context and localStorage
+                // Update the user context and localStorage
                 const updatedUser = { ...user, firstName, lastName, email };
                 setUser(updatedUser);
                 localStorage.setItem("user", JSON.stringify(updatedUser));
@@ -59,8 +71,8 @@ export default function Profile() {
 
     return (
         <div>
-            <h1>Welcome, {user?.name}</h1>
-            <p>Email: {user?.email}</p>
+            <h1>Welcome, {staticFirstName} {staticLastName}</h1>
+            <p>Email: {email}</p>
 
             <form onSubmit={handleUpdate}>
                 <label>
