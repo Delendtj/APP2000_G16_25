@@ -16,6 +16,7 @@ const handle = app.getRequestHandler();
 
 
 const updateProfileRoute = require('./module/logroute'); // Adjust path
+const deleteProfileRoute = require('./module/delete');
   
 // Prepare Next.js start Express server
 app.prepare().then(() => {
@@ -83,11 +84,12 @@ app.prepare().then(() => {
 });
 
 server.use('/api', updateProfileRoute);
+server.use('/api', deleteProfileRoute);
 
 
 server.get("/api/users", async (req, res) => {
   try {
-      const users = await User.find({}, "-passwordhash"); // Exclude passwordhash for security
+      const users = await User.find({}, "-passwordhash"); // Exclude passwordhash 
       return res.status(200).json(users);
   } catch (error) {
       console.error("Error fetching users:", error);
