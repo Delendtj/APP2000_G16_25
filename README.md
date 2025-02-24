@@ -1,5 +1,3 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
 ## Getting Started
 
 npm install dotenv
@@ -13,3 +11,8 @@ localhost:5000
 MONGODB_URI='mongodb+srv://admin:admin1@cluster0.wqcxd.mongodb.net/Disgolfdb'
 
 node server.js 
+
+
+
+
+hosted i prod: https://vast-mesa-22158-90c21fc001d1.herokuapp.com/
