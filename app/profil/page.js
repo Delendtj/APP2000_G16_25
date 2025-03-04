@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";  
 
 export default function Profile() {
-    const { user, logout, setUser } = useAuth();  // Get user data and actions from context
+    const { user, logout, login } = useAuth();  
     const router = useRouter();  // Router to handle page redirection
 
     // State to manage form inputs and messages
@@ -58,12 +58,16 @@ export default function Profile() {
     
             if (response.ok) {
                 setMessage("Profile updated successfully!");
-    
-                // Update the user context and localStorage
+        
                 const updatedUser = { ...user, firstName, lastName, email };
-                setUser(updatedUser); // Update context state
-                localStorage.setItem("user", JSON.stringify(updatedUser)); // Update localStorage
-    
+                
+                // Update localStorage
+                localStorage.setItem("user", JSON.stringify(updatedUser));
+                
+                login(updatedUser);
+
+                setHeaderFirstName(firstName);
+                setHeaderLastName(lastName);
             } else {
                 setMessage(data.error || "Update failed.");
             }
@@ -71,6 +75,7 @@ export default function Profile() {
             setMessage("An error occurred. Please try again.");
         }
     };
+    
     
 
     // Handle account deletion
