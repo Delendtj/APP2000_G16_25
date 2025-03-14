@@ -61,21 +61,23 @@ app.prepare().then(() => {
   server.post("/api/users", async (req, res) => {
     try {
         const { firstName, lastName, email, passwordHash } = req.body;
-
         if (!firstName || !lastName || !email || !passwordHash) {
             return res.status(400).json({ error: "All fields are required." });
         }
-
         // Check if email already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ error: "Email already exists." });
         }
-
-        // Create new user
-        const newUser = new User({ firstName, lastName, email, passwordHash });
+        // Create new user with "free" membership status
+        const newUser = new User({ 
+            firstName, 
+            lastName, 
+            email, 
+            passwordHash,
+            membershipStatus: "free", //default
+        });
         await newUser.save();
-
         res.status(201).json({ message: "User registered successfully!" });
     } catch (error) {
         console.error("Registration Error:", error);

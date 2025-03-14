@@ -11,6 +11,8 @@ const UserSchema = new mongoose.Schema({
   firstName: { type: String, required: true }, 
   lastName: { type: String, required: true }, 
   passwordHash : {type: String, required: true},
+  membershipStatus: {type:String, default:"free"},
+  joinDate: {type:Date, default: Date.now}
 });
 
 UserSchema.pre("save", async function next() {
