@@ -77,7 +77,7 @@ export default function AdminDashboard() {
         <div className="action-buttons" style={styles.actionButtons}>
           <a href="/admin/users" className="action-button" style={styles.actionButton}>Manage Users</a>
           <a href="/../medlemsliste" className="action-button" style={styles.actionButton}>Manage Memberships</a>
-          <a href="/admin/clubs" className="action-button" style={styles.actionButton}>Manage Clubs</a>
+          <a href="/../courseadmin" className="action-button" style={styles.actionButton}>Manage Clubs</a>
         </div>
       </div>
     </div>
