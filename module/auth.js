@@ -1,7 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
-
+//DL
 const router = express.Router();
 
 router.post("/login", async (req, res) => {
@@ -23,12 +23,14 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ error: "Invalid email or password." });
     }
 
-    // Return user data with firstName, lastName, and email
+    // Return user data with firstName, lastName, email, and admin status
     res.status(200).json({
       _id: user._id,
       email: user.email,
-      firstName: user.firstName,  // Make sure to retrieve firstName
-      lastName: user.lastName,    // Make sure to retrieve lastName
+      firstName: user.firstName,
+      lastName: user.lastName,
+      membershipStatus: user.membershipStatus,
+      isAdmin: user.isAdmin || user.membershipStatus === "admin"
     });
 
   } catch (error) {

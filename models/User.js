@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-//DL / Claude
+//DL
 // Define the Counter schema and model
 const counterSchema = new mongoose.Schema({
   _id: { type: String, required: true },
@@ -21,8 +21,9 @@ const UserSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   passwordHash: { type: String, required: true },
-  membershipStatus: { type: String, default: "free" },
+  membershipStatus: { type: String, default: "free", enum: ["free", "premium", "admin"] },
   joinDate: { type: Date, default: Date.now },
+  isAdmin: { type: Boolean, default: false }
 });
 
 UserSchema.pre('save', async function(next) {
@@ -38,6 +39,11 @@ UserSchema.pre('save', async function(next) {
       { new: true, upsert: true }
     );
     this.userId = counter.seq;
+  }
+
+  // Set isAdmin flag if membershipStatus is admin
+  if (this.membershipStatus === 'admin') {
+    this.isAdmin = true;
   }
 
   next();
