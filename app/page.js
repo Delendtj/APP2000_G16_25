@@ -28,9 +28,7 @@ function App({Component, pageProps}) {
       <h2>Hvor kan du spille?</h2>
       <p>Discgolfbaner finnes over hele Norge...</p>
     </div>
- 
-    <button style={stylesb.button}><Link href="/medlemsliste">Trykk her for å bli videresend til medlemslisten</Link></button>
-    </>
+     </>
   );
 }
 
