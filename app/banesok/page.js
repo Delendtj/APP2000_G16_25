@@ -117,7 +117,7 @@ function CourseCard({ course }) {
           {course.reviews.length > 0 ? (
             course.reviews.map(review => (
               <div key={review.reviewId} style={{ padding: '5px 0' }}>
-                <p>{review.reviewText} ({review.rating} ⭐)</p>
+                <p>{review.reviewText} ({review.rating} stars)</p>
               </div>
             ))
           ) : (
