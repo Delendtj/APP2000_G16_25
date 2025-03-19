@@ -9,7 +9,7 @@ router.get("/courses", async (req, res) => {
     console.log("Checking MongoDB Connection...");
     console.log("Mongoose Connection State:", mongoose.connection.readyState);
 
-    console.log("🔍 Fetching courses from MongoDB...");
+    console.log("Fetching courses from MongoDB...");
     const courses = await Course.find();
 
     if (courses.length === 0) {
