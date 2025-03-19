@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
-import Header from '../../components/Header'; // Ensure this path is correct
+import Header from '../../components/Header';
 import '../globals.css';
 import { initMap } from '../../module/map';
 
