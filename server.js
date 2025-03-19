@@ -102,6 +102,16 @@ server.get("/api/users", async (req, res) => {
 
 server.use("/api", router); 
 
+  // Import Course model
+const Course = require("./models/Courses");
+
+// Import Courses Route
+const coursesRoute = require("./module/coursesRoute");
+
+// Use Courses Route at `/models/courses`
+server.use("/models", coursesRoute);
+
+  
   //chatgpt hjalp med oppstart i heroku
   // Håndterer routes with Next.js
   server.all("*", (req, res) => {
