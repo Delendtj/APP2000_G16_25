@@ -103,7 +103,7 @@ server.get("/api/users", async (req, res) => {
 server.use("/api", router); 
 
   // Import Course model
-const Course = require("./models/Courses");
+const Course = require("./models/courses");
 
 // Import Courses Route
 const coursesRoute = require("./module/coursesRoute");

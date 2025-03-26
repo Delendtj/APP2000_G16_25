@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const Course = require("../models/Courses");
+const Course = require("../models/courses");
 const router = express.Router();
 
 // GET All Courses
