@@ -13,8 +13,10 @@ export default function BanesokPage() {
     async function fetchCourses() {
       try {
         console.log("🔍 Fetching courses from frontend...");
-        const response = await fetch("http://localhost:5000/models/courses");
-
+        const response = process.env.NODE_ENV === 'production'
+        ? 'https://vast-mesa-22158-90c21fc001d1.herokuapp.com'
+        : 'http://localhost:5000';
+        
         if (!response.ok) {
           throw new Error(`Network error, Status: ${response.status}`);
         }
