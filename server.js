@@ -15,9 +15,12 @@ const app = next({ dev }); // Next.js dev mode
 const handle = app.getRequestHandler(); 
 
 
-const updateProfileRoute = require('./module/logroute'); // Adjust path
+const updateProfileRoute = require('./module/logroute');
 const deleteProfileRoute = require('./module/delete');
-  
+const KlubbRouter = require('./APi-Shay/klubb');
+const clubinfo = require('./APi-Shay/clubinfo'); 
+const userinfoRoutes = require('./APi-Shay/userinfo');
+
 // Prepare Next.js start Express server
 app.prepare().then(() => {
   const server = express();
@@ -87,7 +90,9 @@ app.prepare().then(() => {
 
 server.use('/api', updateProfileRoute);
 server.use('/api', deleteProfileRoute);
-
+server.use('/api', KlubbRouter);
+server.use('/api', clubinfo);
+server.use('/api', userinfoRoutes);
 
 server.get("/api/users", async (req, res) => {
   try {
