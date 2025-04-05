@@ -3,8 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from "../../module/context";
 
-
-//DETTE ER CHATGPT 
 export default function AdminDashboard() {
   const { user } = useAuth();
   const [stats, setStats] = useState({
@@ -13,6 +11,8 @@ export default function AdminDashboard() {
     totalMemberships: 0
   });
   const [error, setError] = useState(null);
+  const [file, setFile] = useState(null);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     // Fetch dashboard statistics
@@ -50,6 +50,53 @@ export default function AdminDashboard() {
     fetchStats();
   }, []);
 
+  //Claude ai helped with the file upload function i have no idea how multer works
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+ 
+  const handleFileUpload = async (e) => {
+    e.preventDefault();
+
+    if (!file) {
+      setMessage('Please select a file.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('pdf', file);
+
+    const baseUrl = process.env.NODE_ENV === 'production'
+      ? 'https://vast-mesa-22158-90c21fc001d1.herokuapp.com'
+      : 'http://localhost:5000';
+
+    try {
+      const response = await fetch(`${baseUrl}/api/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      // Check content type header
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        const data = await response.json();
+        if (response.ok) {
+          setMessage(data.message);
+        } else {
+          setMessage(data.error || 'Failed to upload file.');
+        }
+      } else {
+        // Handle non-JSON response
+        const text = await response.text();
+        console.log('Raw non-JSON response:', text);
+        setMessage('Server responded with non-JSON data. Check console for details.');
+      }
+    } catch (error) {
+      console.error('File upload error:', error);
+      setMessage('An error occurred while uploading the file.');
+    }
+  };
+
   return (
     <div className="admin-dashboard" style={styles.dashboard}>
       <h1 style={styles.header}>Admin Dashboard</h1>
@@ -80,6 +127,12 @@ export default function AdminDashboard() {
           <a href="/../courseadmin" className="action-button" style={styles.actionButton}>Manage Clubs</a>
         </div>
       </div>
+
+      <form onSubmit={handleFileUpload}>
+        <input type="file" accept="application/pdf" onChange={handleFileChange} />
+        <button type="submit">Upload PDF</button>
+      </form>
+      {message && <p>{message}</p>}
     </div>
   );
 }

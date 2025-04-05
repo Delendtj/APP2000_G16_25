@@ -20,6 +20,7 @@ const deleteProfileRoute = require('./module/delete');
 const KlubbRouter = require('./APi-Shay/klubb');
 const clubinfo = require('./APi-Shay/clubinfo'); 
 const userinfoRoutes = require('./APi-Shay/userinfo');
+const fileUpload = require('./module/middleware');
 
 // Prepare Next.js start Express server
 app.prepare().then(() => {
@@ -93,6 +94,7 @@ server.use('/api', deleteProfileRoute);
 server.use('/api', KlubbRouter);
 server.use('/api', clubinfo);
 server.use('/api', userinfoRoutes);
+server.use('/api', fileUpload);
 
 server.get("/api/users", async (req, res) => {
   try {
@@ -128,5 +130,5 @@ server.use("/models", coursesRoute);
   server.listen(PORT, (err) => {
     if (err) throw err; // Throw error
     console.log(`Server running on http://localhost:${PORT}`); //success message
-  });
+  }); 
 });

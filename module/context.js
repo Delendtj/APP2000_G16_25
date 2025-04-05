@@ -27,16 +27,14 @@ export function AuthProvider({ children }) {
     }, []);
 
     const login = (userData) => {
+        console.log("User data received during login:", userData); // Debug log
+    
         if (userData && userData.firstName && userData.lastName && userData.email) {
             setUser(userData);
-            localStorage.setItem("user", JSON.stringify(userData));
+            localStorage.setItem("user", JSON.stringify(userData)); // Store user data, including userId, in localStorage
             
-            // Redirect based on user role
-            if (userData.membershipStatus === "admin" || userData.isAdmin) {
-                router.push("/admin");
-            } else {
-                router.push("/profil");
-            }
+            // Redirect to the main page after login
+            router.push("/");
         } else {
             console.error("Invalid user data received during login");
         }
@@ -50,7 +48,7 @@ export function AuthProvider({ children }) {
 
     // Function to check if user is admin
     const isAdmin = () => {
-        return user && (user.membershipStatus === "admin" || user.isAdmin === true);
+        return user && (user.isAdmin === true);
     };
 
     return (

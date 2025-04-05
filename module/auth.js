@@ -13,6 +13,8 @@ router.post("/login", async (req, res) => {
   
   try { 
     const user = await User.findOne({ email });
+    console.log("User found in database:", user); // Debug log
+
     if (!user) {
       return res.status(400).json({ error: "Invalid email or password." });
     }
@@ -23,14 +25,15 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ error: "Invalid email or password." });
     }
 
-    // Return user data with firstName, lastName, email, and admin status
+    // Return user data
     res.status(200).json({
       _id: user._id,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
       membershipStatus: user.membershipStatus,
-      isAdmin: user.isAdmin || user.membershipStatus === "admin"
+      isAdmin: user.isAdmin,
+      userId: user.userId, // Ensure this is included
     });
 
   } catch (error) {

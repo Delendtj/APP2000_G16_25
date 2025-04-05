@@ -3,6 +3,8 @@
 import { useAuth } from "../../module/context";  
 import { useState, useEffect } from "react";  
 import { useRouter } from "next/navigation";  
+import Header from "../../components/Header"; 
+import Head from "next/head";
 
 export default function Profile() {
     const { user, logout, login } = useAuth();  
@@ -115,6 +117,13 @@ export default function Profile() {
     };
 
     return (
+        <>
+        <Head>
+      <title>Om Discgolf</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </Head>
+
+    <Header/>
         <div>
             <h1>Welcome, {staticFirstName} {staticLastName}</h1>
             <p>Email: {email}</p>
@@ -157,5 +166,6 @@ export default function Profile() {
 
             <button onClick={logout}>Log out</button>
         </div>
+        </>
     );
 }
