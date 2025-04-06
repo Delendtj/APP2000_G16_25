@@ -210,7 +210,7 @@ function CourseCard({ course, onClick }) {
         <div className="course-details">
           <p><strong>Beskrivelse:</strong> {course.description}</p>
           <p><strong>By:</strong> {course.city}</p>
-          <p><strong>Koordinater:</strong>
+          <p><strong>Koordinater: </strong>
             {Array.isArray(course.coordinates?.coordinates) && course.coordinates.coordinates.length === 2
               ? `${course.coordinates.coordinates[1]}, ${course.coordinates.coordinates[0]}`
               : "Ikke oppgitt"}
