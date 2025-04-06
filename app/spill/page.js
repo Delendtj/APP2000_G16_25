@@ -11,7 +11,7 @@ export default function Spill() {
   const [players, setPlayers] = useState(initialPlayers);
   const [holes, setHoles] = useState(9);
   const [gameStarted, setGameStarted] = useState(false);
-  const [numPlayers, setNumPlayers] = useState(2); // Default number of players (can be changed)
+  const [numPlayers, setNumPlayers] = useState(2); 
   const [playerNames, setPlayerNames] = useState([]);
 
   const handlePlayerNameChange = (index, value) => {
@@ -42,7 +42,7 @@ export default function Spill() {
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>Disc Golf Sporing</h1>
 
-        {/* Form to input number of players and their names */}
+  
         {!gameStarted && (
           <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <h2 style={{ fontSize: '1.25rem', fontWeight: '600' }}>Start nytt spill</h2>
@@ -66,7 +66,7 @@ export default function Spill() {
               style={{ padding: '10px', borderRadius: '8px', border: '1px solid #ccc', marginBottom: '12px', width: '100%' }}
             />
 
-            {/* Dynamically render input fields for player names based on the number of players */}
+          
             {Array.from({ length: numPlayers }).map((_, idx) => (
               <input
                 key={idx}
@@ -84,7 +84,7 @@ export default function Spill() {
           </div>
         )}
 
-        {/* Show game details after the game starts */}
+    
         {gameStarted && (
           <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <h2 style={{ fontSize: '1.25rem', fontWeight: '600' }}>Poengkort</h2>
@@ -109,7 +109,7 @@ export default function Spill() {
                 </div>
               </div>
             ))}
-            <button onClick={() => { /* calculate stats function can be added here */ }} style={{ padding: '12px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
+            <button onClick={() => {  }} style={{ padding: '12px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
               Ferdig
             </button>
           </div>
