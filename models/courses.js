@@ -14,6 +14,18 @@ const courseSchema = new mongoose.Schema(
     holes: { type: Array, default: [] },
     reviews: { type: Array, default: [] },
     weathers: { type: Array, default: [] },
+    coordinates: {
+      type: {
+        type: String,
+        enum: ['Point'],
+        required: true,
+        default: 'Point'
+      },
+      coordinates: {
+        type: [Number], // [longitude, latitude]
+        required: true
+      }
+    }
   },
   { collection: "courses" }
 );
