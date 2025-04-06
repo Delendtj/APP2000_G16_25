@@ -21,7 +21,8 @@ const KlubbRouter = require('./APi-Shay/klubb');
 const clubinfo = require('./APi-Shay/clubinfo'); 
 const userinfoRoutes = require('./APi-Shay/userinfo');
 const fileUpload = require('./module/middleware');
-
+const usermerged = require('./module/usermerge'); 
+const userbyclub = require('./module/usersbyclub');
 // Prepare Next.js start Express server
 app.prepare().then(() => {
   const server = express();
@@ -95,6 +96,8 @@ server.use('/api', KlubbRouter);
 server.use('/api', clubinfo);
 server.use('/api', userinfoRoutes);
 server.use('/api', fileUpload);
+server.use('/api', usermerged); 
+server.use('/api', userbyclub);
 
 server.get("/api/users", async (req, res) => {
   try {
