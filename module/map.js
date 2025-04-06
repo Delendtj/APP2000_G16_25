@@ -9,6 +9,11 @@ import { get } from 'ol/proj.js';
 import OSM from 'ol/source/OSM.js';
 import VectorSource from 'ol/source/Vector.js';
 
+import Feature from 'ol/Feature.js';
+import Point from 'ol/geom/Point.js';
+import { fromLonLat } from 'ol/proj.js';
+import { Style, Circle as CircleStyle, Fill, Stroke } from 'ol/style.js';
+
 let map; // Global variable to store the map instance
 
 export function initMap(targetId, typeSelectId) {
@@ -23,6 +28,7 @@ export function initMap(targetId, typeSelectId) {
   });
 
   const source = new VectorSource();
+
   const vector = new VectorLayer({
     source: source,
     style: {
@@ -43,16 +49,43 @@ export function initMap(targetId, typeSelectId) {
     layers: [raster, vector],
     target: targetId,
     view: new View({
-      center: [1100000, 8500000],
+      center: fromLonLat([10.75, 59.91]), // Oslo center 
       zoom: 6,
       extent,
     }),
   });
 
+  // add course points from window.courseData
+  if (Array.isArray(window.courseData)) {
+    window.courseData.forEach((course) => {
+      const coords = course.coordinates?.coordinates;
+      if (Array.isArray(coords) && coords.length === 2) {
+        const [lon, lat] = coords;
+
+        const feature = new Feature({
+          geometry: new Point(fromLonLat([lon, lat])),
+          name: course.name,
+        });
+
+        feature.setStyle(new Style({
+          image: new CircleStyle({
+            radius: 6,
+            fill: new Fill({ color: '#007bff' }),
+            stroke: new Stroke({ color: '#fff', width: 2 })
+          })
+        }));
+
+        source.addFeature(feature);
+      }
+
+      console.log(window.courseData)
+    });
+  }
+
   const modify = new Modify({ source: source });
   map.addInteraction(modify);
 
-  let draw, snap; // global so we can remove them later
+  let draw, snap; 
   const typeSelect = document.getElementById(typeSelectId);
 
   function addInteractions() {
@@ -65,9 +98,7 @@ export function initMap(targetId, typeSelectId) {
     map.addInteraction(snap);
   }
 
-  /**
-   * Handle change event.
-   */
+  
   typeSelect.onchange = function () {
     map.removeInteraction(draw);
     map.removeInteraction(snap);
@@ -75,4 +106,23 @@ export function initMap(targetId, typeSelectId) {
   };
 
   addInteractions();
+}
+
+export function flyToLocation(lon, lat, zoom = 15) {
+  if (!map) return;
+  map.getView().animate({
+    center: fromLonLat([lon, lat]),
+    zoom: zoom,
+    duration: 500
+  });
+  
+}
+export function resetMapView() {
+  if (!map) return;
+
+  map.getView().animate({
+    center: fromLonLat([10.75, 59.91]), 
+    zoom: 6,
+    duration: 800
+  });
 }
