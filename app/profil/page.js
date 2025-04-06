@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";  
 import Header from "../../components/Header"; 
 import Head from "next/head";
+import "../styles/stil.css"; 
 
 export default function Profile() {
     const { user, logout, login } = useAuth();  

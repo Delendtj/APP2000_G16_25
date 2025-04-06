@@ -4,6 +4,7 @@
 import { useState } from "react";
 import Head from "next/head";
 import Header from "../../components/Header";
+import "../styles/stil.css";
 
 export default function Logginn() {
     const [formData, setFormData] = useState({

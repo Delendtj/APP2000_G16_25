@@ -153,14 +153,15 @@ form{
 
 form > div{
     width: 100%;
+    gap: 5px;
     display: flex;
     justify-content: center;
 }
 
 form label{
     flex-shrink: 0;
-    height: 50px;
-    width: 50px;
+    height: 45px;
+    width: 3em;
     background-color: var(--accent-color);
     fill: var(--base-color);
     border-radius: 10px 10px  10px;
@@ -196,13 +197,13 @@ outline: none;
 form button{
     margin-top: 10px;
     border: none; 
-    border-radius: 1000px;
-    padding: .85em 4em;
+    border-radius: 1em;
+    padding: .85em 2em;
     background-color: var(--accent-color);
     color: white;
     cursor: pointer;
     text-transform: uppercase;
-    font-weight: 700;
+    font-weight: bold;
     transition: 150ms ease;
 }
 form button:hover{
