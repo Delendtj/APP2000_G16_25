@@ -1,7 +1,8 @@
 "use client";
 
 //DL
-import "../styles/stil.css";
+//import "../svg/globals.css"; ;
+import "./klubber.css"; 
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
 

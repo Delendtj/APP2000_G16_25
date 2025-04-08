@@ -1,0 +1,130 @@
+
+:root {
+    --cream: #F5F5F5;       /* Light background */
+    --rust: #973232;        /* Primary accent */
+    --dark-rust: #7A2828;   /* Darker shade for hover */
+    --charcoal: #333333;    /* Text color */
+    --light-gray: #E0E0E0;  /* Borders */
+  }
+  
+  body {
+    background-color: var(--cream);
+    color: var(--charcoal);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  h1 {
+    color: var(--rust);
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+    position: relative;
+    padding-bottom: 1rem;
+  }
+  
+  h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: var(--rust);
+  }
+  
+  h2 {
+    color: var(--rust);
+    font-size: 1.8rem;
+    margin-top: 3rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--light-gray);
+  }
+  
+  h3 {
+    color: var(--rust);
+    font-size: 1.4rem;
+    margin-top: 2rem;
+  }
+  
+  .club-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .club-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .club-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .club-name {
+    color: var(--rust);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  .club-description {
+    margin-bottom: 1rem;
+    color: var(--charcoal);
+  }
+  
+  .members-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 1rem;
+  }
+  
+  .members-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed var(--light-gray);
+    display: flex;
+    align-items: center;
+  }
+  
+  .members-list li::before {
+    content: '•';
+    color: var(--rust);
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+  }
+  
+  .divider {
+    border: none;
+    height: 1px;
+    background-color: var(--light-gray);
+    margin: 2rem 0;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    body {
+      padding: 1rem;
+    }
+    
+    h1 {
+      font-size: 2rem;
+    }
+    
+    .club-container {
+      grid-template-columns: 1fr;
+    }
+  }
+
+
