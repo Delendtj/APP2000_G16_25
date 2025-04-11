@@ -23,10 +23,11 @@ const userinfoRoutes = require('./APi-Shay/userinfo');
 const fileUpload = require('./module/middleware');
 const usermerged = require('./module/usermerge'); 
 const userbyclub = require('./module/usersbyclub');
+const newmember = require('./module/newmember'); 
+
 // Prepare Next.js start Express server
 app.prepare().then(() => {
   const server = express();
-
   // Middleware 
   server.use(cors()); // Enable CORS
   server.use(express.json()); // Enable JSON
@@ -98,6 +99,7 @@ server.use('/api', userinfoRoutes);
 server.use('/api', fileUpload);
 server.use('/api', usermerged); 
 server.use('/api', userbyclub);
+server.use('/api', newmember);
 
 server.get("/api/users", async (req, res) => {
   try {
