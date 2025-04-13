@@ -14,6 +14,7 @@ export default function Header() {
                     <li><Link href="/spill">Spill</Link></li>
                     <li><Link href="/klubber">Klubber</Link></li>
                     <li><Link href="/banesok">Banesøk</Link></li>
+                    <li><Link href ="/betaling">Betaling</Link></li>
                     {!user && <li><Link href="/registrer">Registrer deg</Link></li>}
                     {!user && <li><Link href="/logginn">Logg Inn</Link></li>}
                     {user && (

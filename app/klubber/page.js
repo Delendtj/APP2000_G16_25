@@ -4,23 +4,29 @@
 import "./klubber.css";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
 
 export default function Klubber() {
   const [clubs, setClubs] = useState([]);
   const [userId, setUserId] = useState(null);
   const [message, setMessage] = useState("");
+  const router = useRouter();
 
   const baseUrl =
     process.env.NODE_ENV === "production"
       ? "https://vast-mesa-22158-90c21fc001d1.herokuapp.com"
       : "http://localhost:5000";
 
+  
   useEffect(() => {
     // Retrieve user object from localStorage
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      const parsedUser = JSON.parse(storedUser); // Parse the JSON string
-      setUserId(parsedUser.userId); // Set userId from user object
+      // Parse the JSON string
+      const parsedUser = JSON.parse(storedUser);
+      // Set userId from user object    
+      setUserId(parsedUser.userId); 
     } else {
       console.error("No user object found in localStorage.");
     }
@@ -34,6 +40,7 @@ export default function Klubber() {
           throw new Error("Failed to fetch clubs");
         }
         const data = await response.json();
+        console.log({data});
         setClubs(data);
       } catch (err) {
         setError(err.message);
@@ -42,45 +49,19 @@ export default function Klubber() {
 
     fetchClubs();
   }, []);
-
-  const handleButtonClick = async (clubId) => {
-    if (!userId) {
-      const msg = "You must be logged in to sign up for a club.";
-      setMessage(msg);
-      console.error(msg);
-      return;
-    }
-
-    try {
-      console.log(`Making request to: ${baseUrl}/api/newmember`);
-      const response = await fetch(`${baseUrl}/api/newmember`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId, clubId }),
-      });
-
-      if (!response.ok) {
-        const errorMsg = await response.text();
-        throw new Error(errorMsg || "Failed to sign up for the club");
-      }
-
-      const result = await response.json();
-      setMessage(
-        `Successfully signed up for ${result.clubName || "the club"}!`
-      );
-      console.log("sign up successful", result);
-    } catch (err) {
-      const errorMsg = err.message || "something went wrong during sign - up.";
-      setMessage(errorMsg);
-      console.error("Error signing up:", errorMsg);
-    }
-  };
-
+  
   const isUserRegistered = (club) => {
     return club.registeredUsers.some((user) => user.userId === userId);
   };
+
+  const redirectToPayment = (clubId) => {
+    if (!userId) {
+      setMessage("You must be logged in to sign up for a club.");
+      return
+    }
+    // Redirect to the payment page
+    router.push(`/betaling?clubId=${clubId}`);
+  }
 
   return (
     <>
@@ -122,7 +103,7 @@ export default function Klubber() {
               <p>No contact person available.</p>
             )}
             <button
-              onClick={() => handleButtonClick(club.clubId)}
+              onClick={() => redirectToPayment(club.clubId)}
               disabled={isUserRegistered(club)}
               style={{
                 marginTop: "1rem",
@@ -131,7 +112,6 @@ export default function Klubber() {
                 color: "#fff",
                 border: "none",
                 borderRadius: "4px",
-                cursor: isUserRegistered(club) ? "not-allowed" : "pointer",
               }}
             >
               {isUserRegistered(club) ? "Already a member" : "Sign Up"}
