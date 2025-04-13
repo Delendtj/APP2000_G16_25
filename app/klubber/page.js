@@ -1,30 +1,31 @@
 "use client";
 
 //DL
-import "./klubber.css"; 
+import "./klubber.css";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
 
 export default function Klubber() {
   const [clubs, setClubs] = useState([]);
   const [userId, setUserId] = useState(null);
+  const [message, setMessage] = useState("");
+
   const baseUrl =
     process.env.NODE_ENV === "production"
       ? "https://vast-mesa-22158-90c21fc001d1.herokuapp.com"
       : "http://localhost:5000";
 
-      useEffect(() => {
-        // Retrieve user object from localStorage
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) {
-          const parsedUser = JSON.parse(storedUser); // Parse the JSON string
-          setUserId(parsedUser.userId); // Set userId from user object
-          console.log("User ID retrieved:", parsedUser.userId);
-        } else {
-          console.error("No user object found in localStorage.");
-        }
-      }, []);
-
+  useEffect(() => {
+    // Retrieve user object from localStorage
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser); // Parse the JSON string
+      setUserId(parsedUser.userId); // Set userId from user object
+      console.log("User ID retrieved:", parsedUser.userId);
+    } else {
+      console.error("No user object found in localStorage.");
+    }
+  }, []);
 
   useEffect(() => {
     const fetchClubs = async () => {
@@ -34,10 +35,11 @@ export default function Klubber() {
           throw new Error("Failed to fetch clubs");
         }
         const data = await response.json();
+        console.log("Fetched clubs:", data);
         setClubs(data);
       } catch (err) {
         setError(err.message);
-      } 
+      }
     };
 
     fetchClubs();
@@ -45,10 +47,12 @@ export default function Klubber() {
 
   const handleButtonClick = async (clubId) => {
     if (!userId) {
-      console.error("User ID is not available. Cannot sign up.");
+      const msg = "You must be logged in to sign up for a club.";
+      setMessage(msg);
+      console.error(msg);
       return;
     }
-  
+
     try {
       console.log(`Making request to: ${baseUrl}/api/newmember`);
       const response = await fetch(`${baseUrl}/api/newmember`, {
@@ -58,15 +62,21 @@ export default function Klubber() {
         },
         body: JSON.stringify({ userId, clubId }),
       });
-  
+
       if (!response.ok) {
-        throw new Error("Failed to sign up for the club");
+        const errorMsg = await response.text();
+        throw new Error(errorMsg || "Failed to sign up for the club");
       }
-  
+
       const result = await response.json();
-      console.log("Sign-up successful:", result);
+      setMessage(
+        `Successfully signed up for ${result.clubName || "the club"}!`
+      );
+      console.log("sign up successful", result);
     } catch (err) {
-      console.error("Error signing up:", err.message);
+      const errorMsg = err.message || "something went wrong during sign - up.";
+      setMessage(errorMsg);
+      console.error("Error signing up:", errorMsg);
     }
   };
 
@@ -76,6 +86,20 @@ export default function Klubber() {
 
       <div className="klubber">
         <h1>Clubs and their Contact Persons</h1>
+        {message && (
+          <div
+            style={{
+              backgroundColor: "#f8d7da",
+              color: "#721c24",
+              padding: "0.75rem",
+              margin: "1rem 0",
+              border: "1px solid #f5c6cb",
+              borderRadius: "4px",
+            }}
+          >
+            {message}
+          </div>
+        )}
         {clubs.map((club) => (
           <div
             key={club._id}
@@ -90,7 +114,7 @@ export default function Klubber() {
             <h3>Contact Person:</h3>
             {club.contactPerson ? (
               <p>
-                <strong>{club.contactPerson}</strong>{" "}-{" "}{club.contactEmail}
+                <strong>{club.contactPerson}</strong> - {club.contactEmail}
               </p>
             ) : (
               <p>No contact person available.</p>
