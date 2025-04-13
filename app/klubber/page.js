@@ -21,7 +21,6 @@ export default function Klubber() {
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser); // Parse the JSON string
       setUserId(parsedUser.userId); // Set userId from user object
-      console.log("User ID retrieved:", parsedUser.userId);
     } else {
       console.error("No user object found in localStorage.");
     }
@@ -35,7 +34,6 @@ export default function Klubber() {
           throw new Error("Failed to fetch clubs");
         }
         const data = await response.json();
-        console.log("Fetched clubs:", data);
         setClubs(data);
       } catch (err) {
         setError(err.message);
@@ -80,6 +78,10 @@ export default function Klubber() {
     }
   };
 
+  const isUserRegistered = (club) => {
+    return club.registeredUsers.some((user) => user.userId === userId);
+  };
+
   return (
     <>
       <Header />
@@ -121,17 +123,18 @@ export default function Klubber() {
             )}
             <button
               onClick={() => handleButtonClick(club.clubId)}
+              disabled={isUserRegistered(club)}
               style={{
                 marginTop: "1rem",
                 padding: "0.5rem 1rem",
-                backgroundColor: "#007BFF",
+                backgroundColor: isUserRegistered(club) ? "#ccc" : "#007BFF",
                 color: "#fff",
                 border: "none",
                 borderRadius: "4px",
-                cursor: "pointer",
+                cursor: isUserRegistered(club) ? "not-allowed" : "pointer",
               }}
             >
-              Sign Up
+              {isUserRegistered(club) ? "Already a member" : "Sign Up"}
             </button>
           </div>
         ))}
