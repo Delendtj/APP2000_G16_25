@@ -6,6 +6,7 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);  
     const router = useRouter();
 
     // Load user from localStorage when app starts
@@ -24,6 +25,7 @@ export function AuthProvider({ children }) {
                 localStorage.removeItem("user");
             }
         }
+        setLoading(false); 
     }, []);
 
     const login = (userData) => {
@@ -50,6 +52,10 @@ export function AuthProvider({ children }) {
     const isAdmin = () => {
         return user && (user.isAdmin === true);
     };
+
+    if (loading) {
+        return <p>Loading...</p>; // Show a loading message while user data is being loaded
+    }
 
     return (
         <AuthContext.Provider value={{ user, login, logout, isAdmin }}>
