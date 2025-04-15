@@ -4,7 +4,7 @@
 import { useState } from "react";
 import Head from "next/head";
 import Header from "../../components/Header";
-import "../styles/stil.css";
+import "./registrer.css";
 
 export default function Logginn() {
     const [formData, setFormData] = useState({
@@ -72,7 +72,7 @@ export default function Logginn() {
                         <h1>Registrering</h1>
                         <form onSubmit={handleSubmit}>
                             <div>
-                                <label htmlFor="firstname-input">Fornavn</label>
+                                <label htmlFor="firstname-input"></label>
                                 <input
                                     required
                                     type="text"
@@ -84,7 +84,7 @@ export default function Logginn() {
                                 />
                             </div>
                             <div>
-                                <label htmlFor="lastname-input">Etternavn</label>
+                                <label htmlFor="lastname-input"></label>
                                 <input
                                     required
                                     type="text"
@@ -96,7 +96,7 @@ export default function Logginn() {
                                 />
                             </div>
                             <div>
-                                <label htmlFor="email-input">E-post</label>
+                                <label htmlFor="email-input"></label>
                                 <input
                                     required
                                     type="email"
@@ -108,7 +108,7 @@ export default function Logginn() {
                                 />
                             </div>
                             <div>
-                                <label htmlFor="password-input">Passord</label>
+                                <label htmlFor="password-input"></label>
                                 <input
                                     required
                                     type="password"

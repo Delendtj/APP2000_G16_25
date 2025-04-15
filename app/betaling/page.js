@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Header from "../../components/Header";
-import betaling from "./betaling.css";
+import "./betaling.css"; // Import your CSS file here
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
@@ -84,23 +84,9 @@ const Betaling = () => {
   return (
     <>
       <Header />
-      <div
-        style={{
-          display: "flex",
-          padding: "2rem",
-          width: "600px",
-          margin: "0 auto",
-        }}
-      >
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "1rem",
-            marginTop: "2rem",
-          }}
-        >
+      <div className="payment-container"> 
+      
+        <form onSubmit={handleSubmit}>
           <input
             type="text"
             name="name"
@@ -146,34 +132,15 @@ const Betaling = () => {
           />
 
           <button
-            type="submit"
-            style={{
-              padding: "0.75rem",
-              backgroundColor: "#007BFF",
-              color: "#fff",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: "1rem",
-            }}
-          >
+            type="submit">
             Betal nå
           </button>
         </form>
-        {message && (
-          <div
-            style={{
-              backgroundColor: "#f8d7da",
-              color: "#721c24",
-              padding: "0.75rem",
-              margin: "1rem 0",
-              border: "1px solidrgb(164, 29, 43)",
-              borderRadius: "4px",
-            }}
-          >
+
+        {message && <div className="message-box"> 
             {message}
           </div>
-        )}
+        }
       </div>
     </>
   );

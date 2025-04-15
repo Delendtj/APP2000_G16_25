@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";  
 import Header from "../../components/Header"; 
 import Head from "next/head";
-import "../styles/stil.css"; 
+import "./profil.css"; 
 
 export default function Profile() {
     const { user, logout, login } = useAuth();  
@@ -159,13 +159,11 @@ export default function Profile() {
                 <br />
                 <button type="submit">Update Profile</button>
                 <br />
-                <button type="button" onClick={handleDelete} style={{ color: "red" }}>Delete Profile</button>
+                <button type="button" onClick={handleDelete}>Delete Profile</button>
                 <br />
             </form>
 
             {message && <p>{message}</p>}  {/* Display messages */}
-
-            <button onClick={logout}>Log out</button>
         </div>
         </>
     );
