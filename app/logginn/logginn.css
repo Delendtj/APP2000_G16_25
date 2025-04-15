@@ -1,0 +1,99 @@
+:root {
+    --primary-gradient: linear-gradient(90deg, #f5f5f5, #973232);
+    --input-border: #ccc;
+    --input-focus: #973232;
+    --text-dark: #333;
+    --button-bg: #973232;
+    --button-text: #fff;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--primary-gradient);
+    min-height: 100vh;
+   
+    justify-content: center;
+    align-items: center;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: var(--primary-gradient);
+
+  }
+  nav ul {
+    list-style: none;
+    padding: 20px;
+    margin: 10px;
+  
+  }
+  
+  h1 {
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 2rem;
+    color: var(--button-bg);
+  }
+
+
+  .wrapper {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .form-section {
+    background-color: #d9babadd;
+    padding: 3rem 5rem; 
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(222, 4, 4, 0.2);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+  }
+  
+  .form-section h2 {
+    margin-bottom: 1.5rem;
+    color: black;
+    font-size: 1.8rem;
+  }
+  
+  .form-section form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .form-section input {
+    padding: 0.75rem;
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  
+  .form-section input:focus {
+    outline: none;
+    border-color: var(--input-focus);
+  }
+  
+  .form-section button {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .form-section button:hover {
+    background-color: #7b1e1e;
+  }
+  
