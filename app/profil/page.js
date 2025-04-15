@@ -9,7 +9,7 @@ import "../styles/stil.css";
 
 export default function Profile() {
     const { user, logout, login } = useAuth();  
-    const router = useRouter();  // Router to handle page redirection
+    const router = useRouter();  
 
     // State to manage form inputs and messages
     const [firstName, setFirstName] = useState("");
@@ -18,6 +18,10 @@ export default function Profile() {
     const [message, setMessage] = useState("");  
     const [staticFirstName, setHeaderFirstName] = useState("");
     const [staticLastName, setHeaderLastName] = useState("");
+
+    // State for membership and club details
+    const [membershipId, setMembershipId] = useState(null);
+    const [clubName, setClubName] = useState(null);
 
     // Load user data from localStorage when component mounts
     useEffect(() => {
@@ -28,8 +32,50 @@ export default function Profile() {
             setFirstName(storedUser.firstName || "");
             setLastName(storedUser.lastName || "");
             setEmail(storedUser.email || "");
+
+            // Fetch membership and club details
+            fetchMembershipDetails(storedUser.userId);
         }
     }, []);
+
+    // Fetch membership details
+    const fetchMembershipDetails = async (userId) => {
+    try {
+        const response = await fetch(`/api/usersclub`);
+        if (!response.ok) {
+            throw new Error("Failed to fetch membership details");
+        }
+
+        const usersWithClubs = await response.json();
+
+        // Find the current user's membership details
+        const currentUser = usersWithClubs.find((user) => user.userId === userId);
+
+        if (currentUser) {
+            setMembershipId(currentUser.membershipId || "N/A");
+            setClubName(currentUser.clubId || "N/A");
+        } else {
+            console.log("User is not a member of any club.");
+        }
+    } catch (error) {
+        console.error("Error fetching membership details:", error);
+    }
+};
+
+    // Fetch club details
+    const fetchClubDetails = async (clubId) => {
+        try {
+            const response = await fetch(`/api/klubbinfo/${clubId}`);
+            if (!response.ok) {
+                throw new Error("Failed to fetch club details");
+            }
+
+            const clubData = await response.json();
+            setClubName(clubData.name);
+        } catch (error) {
+            console.error("Error fetching club details:", error);
+        }
+    };
 
     // Handle profile update
     const handleUpdate = async (e) => {
@@ -40,8 +86,6 @@ export default function Profile() {
             setMessage("User ID is missing. Please log in again.");
             return;
         }
-    
-        console.log("Sending update request with:", { _id: user._id, firstName, lastName, email });
     
         try {
             const response = await fetch("/api/update-profile", {
@@ -79,8 +123,6 @@ export default function Profile() {
         }
     };
     
-    
-
     // Handle account deletion
     const handleDelete = async () => {
         const storedUser = JSON.parse(localStorage.getItem("user")); 
@@ -120,14 +162,26 @@ export default function Profile() {
     return (
         <>
         <Head>
-      <title>Om Discgolf</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    </Head>
+            <title>Om Discgolf</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        </Head>
 
-    <Header/>
+        <Header/>
         <div>
             <h1>Welcome, {staticFirstName} {staticLastName}</h1>
             <p>Email: {email}</p>
+
+            {/* Display membership and club details */}
+            {membershipId && (
+                <p>
+                    <strong>Membership ID:</strong> {membershipId}
+                </p>
+            )}
+            {clubName && (
+                <p>
+                    <strong>Club:</strong> {clubName}
+                </p>
+            )}
 
             <form onSubmit={handleUpdate}>
                 <label>

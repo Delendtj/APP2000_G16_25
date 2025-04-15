@@ -15,10 +15,13 @@ router.get("/usersclub", async (req, res) => {
       return res.status(200).json([]);
     }
 
-    // Create a map of userId to clubId
+    // Create a map of userId to membership details
     const userClubMap = {};
-    memberships.forEach(Membership => {
-      userClubMap[Membership.userId] = Membership.clubId;
+    memberships.forEach((membership) => {
+      userClubMap[membership.userId] = {
+        clubId: membership.clubId,
+        membershipId: membership.membershipId
+      };
     });
     
     console.log(`Created user-club map with ${Object.keys(userClubMap).length} entries`);
@@ -28,11 +31,11 @@ router.get("/usersclub", async (req, res) => {
     const users = await User.find({ userId: { $in: userIds } }, "-passwordhash");    
 
     const usersWithClub = users.map(user => {
-      // Use user.userId instead of undefined userId
       const userIdStr = user.userId.toString();
       return {
         ...user.toObject(),
-        clubId: userClubMap[userIdStr]
+        clubId: userClubMap[userIdStr]?.clubId,
+        membershipId: userClubMap[userIdStr]?.membershipId, // Add membership ID
       };
     });
     
