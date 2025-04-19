@@ -24,6 +24,7 @@ const fileUpload = require('./module/middleware');
 const usermerged = require('./module/usermerge'); 
 const userbyclub = require('./module/usersbyclub');
 const newmember = require('./module/newmember'); 
+const pdfroute = require('./module/pdfs'); 
 
 // Prepare Next.js start Express server
 app.prepare().then(() => {
@@ -100,6 +101,7 @@ server.use('/api', fileUpload);
 server.use('/api', usermerged); 
 server.use('/api', userbyclub);
 server.use('/api', newmember);
+server.use('/api', pdfroute);
 
 server.get("/api/users", async (req, res) => {
   try {

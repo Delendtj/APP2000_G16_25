@@ -2,9 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-
-//vibe coded by claude ai
-
+const PDF = require('../models/pdf'); // Import the PDF model
 const router = express.Router();
 
 const storage = multer.diskStorage({
@@ -32,7 +30,7 @@ const upload = multer({
 });
 
 router.post('/upload', (req, res) => {
-  upload.single('pdf')(req, res, (err) => {
+  upload.single('pdf')(req, res, async (err) => {
     if (err) {
       if (err.message === 'Only PDF files are allowed.') {
         return res.status(400).json({ error: err.message });
@@ -45,7 +43,26 @@ router.post('/upload', (req, res) => {
       return res.status(400).json({ error: 'No file uploaded or invalid file type.' });
     }
 
-    res.status(200).json({ message: 'File uploaded successfully!', filePath: req.file.path });
+    const { clubId } = req.body; // Get the clubId from the request body
+    if (!clubId) {
+      return res.status(400).json({ error: 'clubId is required.' });
+    }
+
+    try {
+      // Save the PDF metadata to the database
+      const pdf = new PDF({
+        name: req.file.originalname,
+        url: `/uploadsmulter/${req.file.filename}`, // Path to access the file
+        clubId, // Associate the file with the club
+      });
+
+      await pdf.save();
+
+      res.status(200).json({ message: 'File uploaded successfully!', pdf });
+    } catch (error) {
+      console.error('Error saving PDF metadata:', error);
+      res.status(500).json({ error: 'Failed to save PDF metadata.' });
+    }
   });
 });
 

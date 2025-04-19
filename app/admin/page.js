@@ -18,6 +18,7 @@ export default function AdminDashboard() {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const [adminClubId, setAdminClubId] = useState(null);
 
   useEffect(() => {
     if (!user) {
@@ -54,6 +55,7 @@ export default function AdminDashboard() {
         }
         
         const adminClubId = currentUserWithClub.clubId;
+        setAdminClubId(adminClubId);
         console.log(`Found admin's club ID: ${adminClubId}`);
         
         // Step 3: Fetch users for this specific club ID using usersbyclub
@@ -129,6 +131,7 @@ export default function AdminDashboard() {
 
     const formData = new FormData();
     formData.append('pdf', file);
+    formData.append('clubId', adminClubId); // Include the clubId
 
     const baseUrl = process.env.NODE_ENV === 'production'
       ? 'https://vast-mesa-22158-90c21fc001d1.herokuapp.com'
@@ -140,24 +143,15 @@ export default function AdminDashboard() {
         body: formData,
       });
 
-      // Check content type header
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        const data = await response.json();
-        if (response.ok) {
-          setMessage(data.message);
-        } else {
-          setMessage(data.error || 'Failed to upload file.');
-        }
-      } else {
-        // Handle non-JSON response
-        const text = await response.text();
-        console.log('Raw non-JSON response:', text);
-        setMessage('Server responded with non-JSON data. Check console for details.');
+      if (!response.ok) {
+        throw new Error('Failed to upload file');
       }
+
+      const result = await response.json();
+      setMessage(result.message || 'File uploaded successfully!');
     } catch (error) {
-      console.error('File upload error:', error);
-      setMessage('An error occurred while uploading the file.');
+      console.error('Error uploading file:', error);
+      setMessage('Failed to upload file.');
     }
   };
 
