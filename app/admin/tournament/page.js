@@ -9,8 +9,8 @@ export default function AdminDashboard() {
   const [tournaments, setTournaments] = useState([]);
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
-  const [startdate, setStartdate] = useState('');
-  const [enddate, setEnddate] = useState('');
+  const [startDate, setStartdate] = useState('');
+  const [endDate, setEnddate] = useState('');
   const [courseId, setCourseId] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
@@ -62,10 +62,10 @@ export default function AdminDashboard() {
         body: JSON.stringify({
           name,
           location,
-          startdate,
-          enddate,
-          courseId,
-          clubId,
+          startDate,
+          endDate,
+          courseId: parseInt(courseId, 10),
+          clubId: parseInt(courseId, 10),
           userId: user.userId, 
         }),
       });
@@ -111,14 +111,14 @@ export default function AdminDashboard() {
         <input
           type="date"
           placeholder="Start Date"
-          value={startdate}
+          value={startDate}
           onChange={(e) => setStartdate(e.target.value)}
           required
         />
         <input
           type="date"
           placeholder="End Date"
-          value={enddate}
+          value={endDate}
           onChange={(e) => setEnddate(e.target.value)}
           required
         />
@@ -139,7 +139,7 @@ export default function AdminDashboard() {
       ) : tournaments.length > 0 ? (
         <ul>
           {tournaments.map((tournament) => (
-            <li key={tournament.tournamentId}>
+            <li key={tournament._id}>
               {tournament.name} - {new Date(tournament.startDate).toLocaleDateString()} to{' '}
               {new Date(tournament.endDate).toLocaleDateString()}
             </li>

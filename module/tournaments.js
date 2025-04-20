@@ -4,14 +4,14 @@ const Tournament = require('../models/tournaments');
 
 // Create a new tournament
 router.post('/tournaments', async (req, res) => {
-  const { name, startdate, enddate, clubId, userId } = req.body;
+  const { name, startDate, endDate, location, courseId, clubId, userId } = req.body;
 
-  if (!name || !startdate || enddate || !clubId || !userId) {
+  if (!name || !startDate || !endDate || !location || !courseId || !clubId || !userId) {
     return res.status(400).json({ error: 'All fields are required.' });
   }
 
   try {
-    const tournament = new Tournament({ name, date, clubId, createdBy });
+    const tournament = new Tournament({ name, startDate, endDate, location, courseId, clubId, userId });
     await tournament.save();
     res.status(201).json({ message: 'Tournament created successfully!', tournament });
   } catch (error) {

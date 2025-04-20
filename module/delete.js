@@ -17,7 +17,7 @@ router.delete("/delete-user/:id", async (req, res) => {
         }
 
         // Check if the logged-in user is deleting their own account
-        const loggedInUser = JSON.parse(req.headers.authorization || '{}');  // Assuming user info is passed via header from the client
+        const loggedInUser = JSON.parse(req.headers.authorization || '{}');
         if (!loggedInUser || loggedInUser._id !== id) {
             return res.status(403).json({
                 error: "Unauthorized to delete this account.",
