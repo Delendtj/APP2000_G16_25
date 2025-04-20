@@ -40,40 +40,37 @@ export default function Profile() {
 
     // Fetch membership details
     const fetchMembershipDetails = async (userId) => {
-    try {
-        const response = await fetch(`/api/usersclub`);
-        if (!response.ok) {
-            throw new Error("Failed to fetch membership details");
-        }
-
-        const usersWithClubs = await response.json();
-
-        // Find the current user's membership details
-        const currentUser = usersWithClubs.find((user) => user.userId === userId);
-
-        if (currentUser) {
-            setMembershipId(currentUser.membershipId || "N/A");
-            setClubName(currentUser.clubId || "N/A");
-        } else {
-            console.log("User is not a member of any club.");
-        }
-    } catch (error) {
-        console.error("Error fetching membership details:", error);
-    }
-};
-
-    // Fetch club details
-    const fetchClubDetails = async (clubId) => {
         try {
-            const response = await fetch(`/api/klubbinfo/${clubId}`);
+            const response = await fetch(`/api/usersclub`);
             if (!response.ok) {
-                throw new Error("Failed to fetch club details");
+                throw new Error("Failed to fetch membership details");
             }
 
-            const clubData = await response.json();
-            setClubName(clubData.name);
+            const usersWithClubs = await response.json();
+
+            // Find the current user's membership details
+            const currentUser = usersWithClubs.find((user) => user.userId === userId);
+
+            if (currentUser) {
+                setMembershipId(currentUser.membershipId || "N/A");
+
+                // Fetch the club name using the clubId
+                if (currentUser.clubId) {
+                    const clubResponse = await fetch(`/api/klubber/${currentUser.clubId}`);
+                    if (!clubResponse.ok) {
+                        throw new Error("Failed to fetch club details");
+                    }
+
+                    const clubData = await clubResponse.json();
+                    setClubName(clubData.name || "Unknown Club");
+                } else {
+                    setClubName("N/A");
+                }
+            } else {
+                console.log("User is not a member of any club.");
+            }
         } catch (error) {
-            console.error("Error fetching club details:", error);
+            console.error("Error fetching membership details:", error);
         }
     };
 
@@ -171,17 +168,17 @@ export default function Profile() {
             <h1>Welcome, {staticFirstName} {staticLastName}</h1>
             <p>Email: {email}</p>
 
-            {/* Display membership and club details */}
-            {membershipId && (
+            
+            
                 <p>
                     <strong>Membership ID:</strong> {membershipId}
                 </p>
-            )}
-            {clubName && (
+            
+          
                 <p>
                     <strong>Club:</strong> {clubName}
                 </p>
-            )}
+            
 
             <form onSubmit={handleUpdate}>
                 <label>

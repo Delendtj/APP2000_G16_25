@@ -31,7 +31,7 @@ export default function AdminLayout({ children }) {
           <h2>Admin Panel</h2>
           <nav>
             <ul>
-              <li><a href="/admin/dashboard">Dashboard</a></li>
+              <li><a href="/admin">Dashboard</a></li>
               <li><a href="/admin/users">Manage Users</a></li>
               <li><a href="/admin/memberships">Manage Memberships</a></li>
               <li><a href="/admin/clubs">Manage Clubs</a></li>
