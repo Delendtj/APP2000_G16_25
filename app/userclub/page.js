@@ -10,6 +10,7 @@ export default function UserClubPage() {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [loading, setLoading] = useState(true);
   const [pdfs, setPdfs] = useState([]); // State to store PDFs
+  const [tournaments, setTournaments] = useState([]); // State to store tournaments
 
   useEffect(() => {
     const checkMembership = async () => {
@@ -33,6 +34,7 @@ export default function UserClubPage() {
         if (currentUser && currentUser.clubId) {
           setIsAuthorized(true);
           fetchPdfs(currentUser.clubId); // Fetch PDFs for the user's club
+          fetchTournaments(currentUser.clubId); // Fetch tournaments for the user's club
         } else {
           setIsAuthorized(false);
         }
@@ -59,6 +61,25 @@ export default function UserClubPage() {
         setPdfs(pdfData);
       } catch (error) {
         console.error('Error fetching PDFs:', error);
+      }
+    };
+
+    const fetchTournaments = async (clubId) => {
+      try {
+        const baseUrl =
+          process.env.NODE_ENV === 'production'
+            ? 'https://vast-mesa-22158-90c21fc001d1.herokuapp.com'
+            : 'http://localhost:5000';
+
+        const response = await fetch(`${baseUrl}/api/tournaments/${clubId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch tournaments');
+        }
+
+        const tournamentData = await response.json();
+        setTournaments(tournamentData);
+      } catch (error) {
+        console.error('Error fetching tournaments:', error);
       }
     };
 
@@ -91,6 +112,19 @@ export default function UserClubPage() {
         </ul>
       ) : (
         <p>No documents available for your club.</p>
+      )}
+
+      <h2>Club Tournaments</h2>
+      {tournaments.length > 0 ? (
+        <ul>
+          {tournaments.map((tournament) => (
+            <li key={tournament.tournamentId}>
+              {tournament.name} - from {new Date(tournament.startDate).toLocaleDateString()} to {new Date(tournament.endDate).toLocaleDateString()}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No tournaments available for your club.</p>
       )}
     </div>
   );

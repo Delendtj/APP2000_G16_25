@@ -4,6 +4,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from "../../module/context";
+import Link from 'next/link';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -156,6 +157,7 @@ export default function AdminDashboard() {
   };
 
   return (
+    <>
     <div className="admin-dashboard" style={styles.dashboard}>
       <h1 style={styles.header}>Admin Dashboard</h1>
       <p style={styles.welcome}>Welcome, {user?.firstName} {user?.lastName}!</p>
@@ -186,13 +188,20 @@ export default function AdminDashboard() {
         </div>
       </div>
 
+
       <form onSubmit={handleFileUpload}>
         <input type="file" accept="application/pdf" onChange={handleFileChange} />
         <button type="submit">Upload PDF</button>
       </form>
       {message && <p>{message}</p>}
+      
+        
+        
     </div>
-  );
+      <Link href={`/admin/tournament?clubId=${adminClubId}`} className="action-button" style={styles.actionButton}>
+        Manage Tournaments
+        </Link>
+  </>);
 }
 
 const styles = {
