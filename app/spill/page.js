@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Header from '../../components/Header';
 import './spill.css';
 
-export default function SpillPage() {
+export default function Spill() {
   const [courses, setCourses] = useState([]);  // For å lagre alle baner
   const [selectedCourse, setSelectedCourse] = useState(null); // For å lagre den valgte banen
   const [currentHole, setCurrentHole] = useState(1); // Hullnummeret spilleren er på
