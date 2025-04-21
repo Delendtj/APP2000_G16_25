@@ -2,11 +2,12 @@
 import Link from 'next/link';
 import { useAuth } from '../module/context';
 
+
 export default function Header() {
     const { user, isAdmin, logout } = useAuth(); // Add `logout` from the AuthProvider
 
     return (
-        <header>
+        <header>            
             <h1>Discgolf</h1>
             <nav>
                 <ul>
@@ -22,8 +23,8 @@ export default function Header() {
                             <li><Link href="/profil">Profil</Link></li>
                             {isAdmin() && <li><Link href="/admin">Admin Panel</Link></li>}
                             <li>
-                                <button onClick={logout} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>
-                                    Logg Ut
+                                <button onClick={logout} style={{ background: 'brown', color: 'white', cursor: 'pointer' }}>
+                                   LOGG UT  
                                 </button>
                             </li>
                         </>
