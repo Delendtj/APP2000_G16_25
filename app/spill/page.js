@@ -1,49 +1,19 @@
-'use client';
-import { useEffect, useState } from 'react';
+'use client'
+import { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import './spill.css';
-import Header from '../../components/Header';
-import { initMap, flyToLocation } from '../../module/map';
+import Header from '../../components/Header'; 
 
 export default function Spill() {
   const [gameName, setGameName] = useState('');
   const [players, setPlayers] = useState([]);
   const [playerName, setPlayerName] = useState('');
   const [scores, setScores] = useState({});
-  const [courses, setCourses] = useState([]);
+  
+  // Ref for kartet
+  const mapRef = useRef(null);
 
-  useEffect(() => {
-    async function fetchCourses() {
-      try {
-        const baseUrl =
-          process.env.NODE_ENV === 'production'
-            ? 'https://vast-mesa-22158-90c21fc001d1.herokuapp.com'
-            : 'http://localhost:5000';
-
-        const response = await fetch(`${baseUrl}/models/courses`);
-        if (!response.ok) throw new Error('Klarte ikke hente baner');
-        const data = await response.json();
-        setCourses(data);
-      } catch (error) {
-        console.error('Feil ved henting av baner:', error.message);
-      }
-    }
-
-    fetchCourses();
-  }, []);
-
-  useEffect(() => {
-    initMap('map', 'type');
-  }, []);
-
-  const handleFlyTo = (course) => {
-    const coords = course.coordinates?.coordinates;
-    if (Array.isArray(coords)) {
-      const [lon, lat] = coords;
-      flyToLocation(Number(lon), Number(lat));
-    }
-  };
-
+  // Funksjon for å håndtere spillnavnet
   const handleGameNameChange = (e) => {
     setGameName(e.target.value);
   };
@@ -63,50 +33,31 @@ export default function Spill() {
     });
   };
 
+  
+  useEffect(() => {
+    if (mapRef.current) {
+      
+      
+      console.log('Kartet er lastet!');
+    }
+  }, []);  
+
   return (
     <>
       <Head>
-        <title>Frisbeegolf Spill</title>
+        <title>Om Discgolf</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
 
-      <Header />
-
+      <Header/>
       <div className="container">
         <div className="right-panel">
           <h2>Spillkart</h2>
-          <div id="map" className="map" style={{ width: '100%', height: '400px' }}></div>
+          <div ref={mapRef} className="map" style={{ width: '100%', height: '400px' }}></div>
         </div>
 
         <div className="left-panel">
           <h1>Frisbeegolf Spill</h1>
-
-          {/* Tilgjengelige baner */}
-          <div className="game-section">
-            <h2>Baner</h2>
-            {courses.length === 0 ? (
-              <p>Laster baner...</p>
-            ) : (
-              <ul style={{ listStyle: 'none', padding: 0 }}>
-                {courses.map((course) => (
-                  <li
-                    key={course._id}
-                    onClick={() => handleFlyTo(course)}
-                    style={{
-                      background: '#444',
-                      padding: '8px',
-                      borderRadius: '6px',
-                      marginBottom: '6px',
-                      color: 'white',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <strong>{course.name}</strong> – {course.numberOfHoles} hull
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
 
           {/* Spillnavn */}
           <div className="game-section">
@@ -132,9 +83,7 @@ export default function Spill() {
                 placeholder="Legg til spiller"
               />
             </label>
-            <button className="poeng-knapp" onClick={handleAddPlayer}>
-              Legg til spiller
-            </button>
+            <button className="poeng-knapp" onClick={handleAddPlayer}>Legg til spiller</button>
           </div>
 
           {/* Spillerliste og score */}
