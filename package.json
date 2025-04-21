@@ -1,5 +1,5 @@
 {
-  "name": "Discgolf",
+  "name": "discgolf",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -33,5 +33,9 @@
     "@eslint/eslintrc": "^3",
     "eslint": "^9.19.0",
     "eslint-config-next": "15.1.6"
-  }
+  },
+  "description": "npm install dotenv",
+  "main": "server.js",
+  "author": "",
+  "license": "ISC"
 }

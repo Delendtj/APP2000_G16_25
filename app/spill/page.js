@@ -1,154 +1,169 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
-import './spill.css';
 import Header from '../../components/Header';
+import './spill.css';
 
 export default function Spill() {
-  const [courses, setCourses] = useState([]);  // For å lagre banene
-  const [selectedCourse, setSelectedCourse] = useState(null);  // Valgt bane
   const [players, setPlayers] = useState([]);
   const [playerName, setPlayerName] = useState('');
+  const [holeCount, setHoleCount] = useState(9);
+  const [currentHole, setCurrentHole] = useState(1);
   const [scores, setScores] = useState({});
-  const [gameName, setGameName] = useState('');
+  const [gameStarted, setGameStarted] = useState(false);
+  const [gameFinished, setGameFinished] = useState(false);
+  const [courses, setCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState(null);
 
-  // Hente banene fra API
   useEffect(() => {
-    const fetchCourses = async () => {
+    async function fetchCourses() {
       try {
-        const response = await fetch('http://localhost:5000/api/courses');  // Backend API endpoint
-        const data = await response.json();
-        setCourses(data);  // Sett banene i state
+        const baseUrl = process.env.NODE_ENV === 'production'
+          ? 'https://vast-mesa-22158-90c21fc001d1.herokuapp.com'
+          : 'http://localhost:5000';
+        const res = await fetch(`${baseUrl}/models/courses`);
+        const data = await res.json();
+        setCourses(data);
       } catch (err) {
-        console.error("Error fetching courses:", err);
+        console.error("Feil ved henting av baner:", err);
       }
-    };
+    }
 
     fetchCourses();
   }, []);
 
-  // Funksjon for å håndtere spillnavnet
-  const handleGameNameChange = (e) => {
-    setGameName(e.target.value);
+  const startGame = () => {
+    if (!selectedCourse || players.length === 0) return;
+
+    const initialScores = {};
+    players.forEach(player => {
+      initialScores[player] = {};
+    });
+
+    setHoleCount(selectedCourse.numberOfHoles || 9);
+    setScores(initialScores);
+    setCurrentHole(1);
+    setGameStarted(true);
+    setGameFinished(false);
   };
 
-  // Funksjon for å legge til spiller
   const handleAddPlayer = () => {
     if (playerName && !players.includes(playerName)) {
       setPlayers([...players, playerName]);
-      setScores({ ...scores, [playerName]: {} });  // Nullstill score for spilleren
       setPlayerName('');
     }
   };
 
-  // Funksjon for å registrere score
-  const handleScoreChange = (player, hole, score) => {
-    setScores({
-      ...scores,
+  const handleScoreChange = (player, change) => {
+    setScores(prev => ({
+      ...prev,
       [player]: {
-        ...scores[player],
-        [hole]: score,
+        ...prev[player],
+        [currentHole]: (prev[player]?.[currentHole] || 3) + change,
       },
-    });
+    }));
   };
 
-  // Funksjon for å velge bane
-  const handleSelectCourse = (course) => {
-    setSelectedCourse(course);
-    setScores({});  // Nullstill poeng for spillere
+  const handleNextHole = () => {
+    if (currentHole < holeCount) {
+      setCurrentHole(currentHole + 1);
+    } else {
+      setGameFinished(true);
+    }
+  };
+
+  const totalScore = (player) => {
+    return Object.values(scores[player] || {}).reduce((acc, val) => acc + (val - 3), 0);
   };
 
   return (
     <>
       <Head>
-        <title>Frisbeegolf Spill</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Spill Frisbeegolf</title>
       </Head>
-
       <Header />
-      <div className="container">
-        <div className="right-panel">
-          <h2>Velg Bane</h2>
-          <ul>
-            {courses.map((course) => (
-              <li key={course._id} onClick={() => handleSelectCourse(course)}>
-                {course.name} - {course.holes} hull
-              </li>
-            ))}
-          </ul>
-        </div>
 
-        <div className="left-panel">
-          <h1>Frisbeegolf Spill</h1>
+      <div className="spill-wrapper">
+        {!gameStarted ? (
+          <div className="setup">
+            <h2>Start nytt spill</h2>
 
-          {/* Spillnavn */}
-          <div className="game-section">
             <label>
-              Spillnavn:
-              <input
-                type="text"
-                value={gameName}
-                onChange={handleGameNameChange}
-                placeholder="Navn på spillet"
-              />
+              Velg bane:
+              <select
+                value={selectedCourse?._id || ''}
+                onChange={(e) => {
+                  const course = courses.find(c => c._id === e.target.value);
+                  setSelectedCourse(course);
+                }}
+              >
+                <option value="">-- Velg en bane --</option>
+                {courses.map(course => (
+                  <option key={course._id} value={course._id}>
+                    {course.name} ({course.numberOfHoles} hull)
+                  </option>
+                ))}
+              </select>
             </label>
-          </div>
 
-          {/* Legg til spiller */}
-          <div className="game-section">
             <label>
-              Spiller navn:
+              Legg til spiller:
               <input
                 type="text"
                 value={playerName}
                 onChange={(e) => setPlayerName(e.target.value)}
-                placeholder="Legg til spiller"
               />
+              <button onClick={handleAddPlayer}>Legg til</button>
             </label>
-            <button className="poeng-knapp" onClick={handleAddPlayer}>Legg til spiller</button>
-          </div>
 
-          {/* Spillerliste og registrer score */}
-          <div className="game-section">
-            <h2>Spillere</h2>
             <ul>
-              {players.map((player) => (
-                <li key={player}>
-                  {player}
-                  <div>
-                    {/* Hull-registrering */}
-                    {selectedCourse && Array.from({ length: selectedCourse.holes }).map((_, holeIndex) => (
-                      <div key={holeIndex}>
-                        <label>Hull {holeIndex + 1} score: </label>
-                        <input
-                          type="number"
-                          value={scores[player]?.[holeIndex + 1] || ''}
-                          onChange={(e) => handleScoreChange(player, holeIndex + 1, e.target.value)}
-                          placeholder={`Score for Hull ${holeIndex + 1}`}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </li>
-              ))}
+              {players.map((p) => <li key={p}>{p}</li>)}
             </ul>
-          </div>
 
-          {/* Resultater */}
-          <div className="game-section">
-            <h2>Resultater</h2>
-            {players.length > 0 && (
-              <ul>
-                {players.map((player) => (
-                  <li key={player}>
-                    <strong>{player}</strong>: {Object.values(scores[player] || {}).join(', ')}
-                  </li>
-                ))}
-              </ul>
-            )}
+            <button className="start-btn" onClick={startGame}>
+              Start spill
+            </button>
           </div>
-        </div>
+        ) : gameFinished ? (
+          <div className="scoreboard">
+            <h2>Resultater</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Spiller</th>
+                  <th>Totalt (+/- par)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {players.map(player => (
+                  <tr key={player}>
+                    <td>{player}</td>
+                    <td>{totalScore(player)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="hole-play">
+            <h2>Hull {currentHole} av {holeCount}</h2>
+            {players.map(player => (
+              <div key={player} className="score-entry">
+                <h4>{player}</h4>
+                <div className="score-controls">
+                  <button onClick={() => handleScoreChange(player, -1)}>-</button>
+                  <span>{scores[player]?.[currentHole] || 3}</span>
+                  <button onClick={() => handleScoreChange(player, 1)}>+</button>
+                </div>
+              </div>
+            ))}
+
+            <button className="next-hole-btn" onClick={handleNextHole}>
+              {currentHole === holeCount ? "Avslutt spill" : "Neste hull"}
+            </button>
+          </div>
+        )}
       </div>
     </>
   );
