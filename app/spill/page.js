@@ -2,7 +2,7 @@
 //KL
 import { useState } from 'react';
 import Head from 'next/head';
-import '../spill.css';
+import './spill.css';
 import Header from '../../components/Header'; 
 
 export default function Spill() {
