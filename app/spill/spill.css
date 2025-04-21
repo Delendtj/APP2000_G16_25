@@ -1,4 +1,4 @@
-/* Container for hele spillvisningen */
+/* Generelle container-stiler */
 .container {
     display: flex;
     flex-direction: row;
@@ -8,25 +8,31 @@
     padding: 20px;
   }
   
-  /* Venstre side (spillnavn, spillere, score og baner) */
+  /* Venstre panel (spillregistrering) */
   .left-panel {
     width: 45%;
     padding: 20px;
     background: #3c1e1e;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    overflow-y: auto;
-    max-height: 90vh;
+  }
+  
+  /* Høyre panel (baner) */
+  .right-panel {
+    width: 45%;
+    background: #222;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   }
   
   /* Seksjoner i venstre panel */
   .game-section {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
   
-  /* Input-felt for tekst og tall */
-  input[type="text"],
-  input[type="number"] {
+  /* Inngangsfelt for tekst og nummer */
+  input[type="text"], input[type="number"] {
     padding: 8px;
     margin: 5px 0;
     width: 100%;
@@ -34,10 +40,9 @@
     background-color: #444;
     color: white;
     border: 1px solid #ccc;
-    box-sizing: border-box;
   }
   
-  /* Knapp for å legge til poeng/spillere */
+  /* Knapp for å legge til spiller */
   .poeng-knapp {
     padding: 10px 20px;
     background: #973232;
@@ -52,43 +57,47 @@
     background-color: #b73737;
   }
   
-  /* Seksjonsoverskrifter */
+  /* Spillerliste og poengregistrering */
   .game-section h2 {
     font-size: 1.5rem;
     margin-bottom: 10px;
-    color: #f5f5f5;
   }
   
-  /* Lister og listeelementer */
   .game-section ul {
     list-style: none;
     padding: 0;
-    margin: 0;
   }
   
   .game-section li {
-    margin: 6px 0;
-    color: #f0f0f0;
+    margin: 5px 0;
   }
   
-  /* Etiketter */
   .game-section label {
     font-size: 1rem;
     margin-bottom: 5px;
     display: block;
-    color: #ddd;
   }
   
-  /* Høyre side med kart */
-  .right-panel {
-    width: 50%;
-    background: #222;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  /* Liste med baner (i høyre panel) */
+  .right-panel ul {
+    list-style-type: none;
+    padding: 0;
   }
   
-  /* Kartvisning */
+  .right-panel li {
+    padding: 8px;
+    margin-bottom: 10px;
+    background: #444;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .right-panel li:hover {
+    background-color: #5c4343;
+  }
+  
+  /* Høyre panel - kartet */
   .map {
     width: 100%;
     height: 400px;
@@ -96,18 +105,16 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   }
   
-  /* Stil for hver bane i listen */
-  .game-section ul li {
-    background: #444;
-    padding: 10px;
-    border-radius: 6px;
-    margin-bottom: 6px;
-    color: white;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
+  /* Responsivitet for små skjermer */
+  @media (max-width: 768px) {
+    .container {
+      flex-direction: column;
+      align-items: center;
+    }
   
-  .game-section ul li:hover {
-    background: #5a5a5a;
+    .left-panel, .right-panel {
+      width: 90%;
+      margin-bottom: 20px;
+    }
   }
   

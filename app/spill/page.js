@@ -1,59 +1,82 @@
 'use client'
-import { useState, useEffect, useRef } from 'react';
+
+import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import './spill.css';
-import Header from '../../components/Header'; 
+import Header from '../../components/Header';
 
 export default function Spill() {
-  const [gameName, setGameName] = useState('');
+  const [courses, setCourses] = useState([]);  // For å lagre banene
+  const [selectedCourse, setSelectedCourse] = useState(null);  // Valgt bane
   const [players, setPlayers] = useState([]);
   const [playerName, setPlayerName] = useState('');
   const [scores, setScores] = useState({});
-  
-  // Ref for kartet
-  const mapRef = useRef(null);
+  const [gameName, setGameName] = useState('');
+
+  // Hente banene fra API
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/courses');  // Backend API endpoint
+        const data = await response.json();
+        setCourses(data);  // Sett banene i state
+      } catch (err) {
+        console.error("Error fetching courses:", err);
+      }
+    };
+
+    fetchCourses();
+  }, []);
 
   // Funksjon for å håndtere spillnavnet
   const handleGameNameChange = (e) => {
     setGameName(e.target.value);
   };
 
+  // Funksjon for å legge til spiller
   const handleAddPlayer = () => {
     if (playerName && !players.includes(playerName)) {
       setPlayers([...players, playerName]);
-      setScores({ ...scores, [playerName]: [] });
+      setScores({ ...scores, [playerName]: {} });  // Nullstill score for spilleren
       setPlayerName('');
     }
   };
 
-  const handleScoreChange = (player, score) => {
+  // Funksjon for å registrere score
+  const handleScoreChange = (player, hole, score) => {
     setScores({
       ...scores,
-      [player]: [...scores[player], parseInt(score)],
+      [player]: {
+        ...scores[player],
+        [hole]: score,
+      },
     });
   };
 
-  
-  useEffect(() => {
-    if (mapRef.current) {
-      
-      
-      console.log('Kartet er lastet!');
-    }
-  }, []);  
+  // Funksjon for å velge bane
+  const handleSelectCourse = (course) => {
+    setSelectedCourse(course);
+    setScores({});  // Nullstill poeng for spillere
+  };
 
   return (
     <>
       <Head>
-        <title>Om Discgolf</title>
+        <title>Frisbeegolf Spill</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
 
-      <Header/>
+      <Header />
       <div className="container">
         <div className="right-panel">
-          <h2>Spillkart</h2>
-          <div ref={mapRef} className="map" style={{ width: '100%', height: '400px' }}></div>
+          <h2>Velg Bane</h2>
+          <ul>
+            {courses.map((course) => (
+              <li key={course._id} onClick={() => handleSelectCourse(course)}>
+                {course.name} - {course.holes} hull
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div className="left-panel">
@@ -86,7 +109,7 @@ export default function Spill() {
             <button className="poeng-knapp" onClick={handleAddPlayer}>Legg til spiller</button>
           </div>
 
-          {/* Spillerliste og score */}
+          {/* Spillerliste og registrer score */}
           <div className="game-section">
             <h2>Spillere</h2>
             <ul>
@@ -94,12 +117,18 @@ export default function Spill() {
                 <li key={player}>
                   {player}
                   <div>
-                    <label>Score for {player}: </label>
-                    <input
-                      type="number"
-                      onChange={(e) => handleScoreChange(player, e.target.value)}
-                      placeholder="Registrer score"
-                    />
+                    {/* Hull-registrering */}
+                    {selectedCourse && Array.from({ length: selectedCourse.holes }).map((_, holeIndex) => (
+                      <div key={holeIndex}>
+                        <label>Hull {holeIndex + 1} score: </label>
+                        <input
+                          type="number"
+                          value={scores[player]?.[holeIndex + 1] || ''}
+                          onChange={(e) => handleScoreChange(player, holeIndex + 1, e.target.value)}
+                          placeholder={`Score for Hull ${holeIndex + 1}`}
+                        />
+                      </div>
+                    ))}
                   </div>
                 </li>
               ))}
@@ -113,7 +142,7 @@ export default function Spill() {
               <ul>
                 {players.map((player) => (
                   <li key={player}>
-                    <strong>{player}</strong>: {scores[player].join(', ')}
+                    <strong>{player}</strong>: {Object.values(scores[player] || {}).join(', ')}
                   </li>
                 ))}
               </ul>
