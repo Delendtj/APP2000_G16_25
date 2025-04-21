@@ -64,8 +64,8 @@ export default function AdminDashboard() {
           location,
           startDate,
           endDate,
-          courseId: parseInt(courseId, 10),
-          clubId: parseInt(courseId, 10),
+          courseId,
+          clubId,
           userId: user.userId, 
         }),
       });
@@ -89,6 +89,7 @@ export default function AdminDashboard() {
   };
 
   return (
+    
     <div>
       <h1>Admin Dashboard</h1>
 

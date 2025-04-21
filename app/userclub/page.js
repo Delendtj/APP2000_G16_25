@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../module/context';
+import Header from '../../components/Header';
+import Head from 'next/head';
 
 export default function UserClubPage() {
   const { user } = useAuth(); // Get the logged-in user
@@ -95,6 +97,13 @@ export default function UserClubPage() {
   }
 
   return (
+    <>
+     <Head>
+      <title>Om Discgolf</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </Head>
+
+    <Header/>
     <div>
       <h1>Welcome to Your Club Page</h1>
       <p>This page is accessible only to members of your club.</p>
@@ -118,7 +127,7 @@ export default function UserClubPage() {
       {tournaments.length > 0 ? (
         <ul>
           {tournaments.map((tournament) => (
-            <li key={tournament.tournamentId}>
+            <li key={tournament._id}>
               {tournament.name} - from {new Date(tournament.startDate).toLocaleDateString()} to {new Date(tournament.endDate).toLocaleDateString()}
             </li>
           ))}
@@ -127,5 +136,6 @@ export default function UserClubPage() {
         <p>No tournaments available for your club.</p>
       )}
     </div>
+    </>
   );
 }
