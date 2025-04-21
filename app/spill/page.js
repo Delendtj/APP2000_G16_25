@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Header from '../../components/Header';
-import '../globals.css';
+import './spill.css';
 
 export default function SpillPage() {
   const [courses, setCourses] = useState([]);  // For å lagre alle baner
