@@ -224,7 +224,8 @@ const baseUrl =
                         geometry,
                         user
                       };
-                      const res = await fetch(`/api/holes`, {
+                      const res = await fetch(`${baseUrl}/api/holes`, {
+
                         method: 'POST',
                         headers: {
                           'Content-Type': 'application/json',
@@ -254,7 +255,7 @@ const baseUrl =
                           user,
                           courseId: selectedCourse.courseId
                         };
-                        const res = await fetch(`/api/holes/${selectedHole._id}`, {
+                        const res = await fetch(`${baseUrl}/api/holes/${selectedHole._id}`, {
                           method: 'PUT',
                           headers: {
                             'Content-Type': 'application/json',
