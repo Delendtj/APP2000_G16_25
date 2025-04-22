@@ -47,7 +47,7 @@ const baseUrl =
 
   const fetchCourses = async () => {
     try {
-      const res = await fetch('${baseUrl}/models/courses');
+      const res = await fetch(`${baseUrl}/models/courses`);
       const data = await res.json();
       setCourses(data);
     } catch (error) {
