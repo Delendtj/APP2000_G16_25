@@ -1,61 +1,40 @@
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
-import Draw from 'ol/interaction/Draw.js';
-import Modify from 'ol/interaction/Modify.js';
-import Snap from 'ol/interaction/Snap.js';
-import TileLayer from 'ol/layer/Tile.js';
-import VectorLayer from 'ol/layer/Vector.js';
-import { get } from 'ol/proj.js';
-import OSM from 'ol/source/OSM.js';
-import VectorSource from 'ol/source/Vector.js';
-
 import Feature from 'ol/Feature.js';
 import Point from 'ol/geom/Point.js';
-import { fromLonLat } from 'ol/proj.js';
-import { Style, Circle as CircleStyle, Fill, Stroke } from 'ol/style.js';
+import TileLayer from 'ol/layer/Tile.js';
+import VectorLayer from 'ol/layer/Vector.js';
+import OSM from 'ol/source/OSM.js';
+import VectorSource from 'ol/source/Vector.js';
+import { fromLonLat, toLonLat } from 'ol/proj.js';
+import { Style, Circle as CircleStyle, Fill, Stroke, Text } from 'ol/style.js';
+import Draw from 'ol/interaction/Draw.js';
+import Select from 'ol/interaction/Select.js';
+import Translate from 'ol/interaction/Translate.js';
 
-let map; // Global variable to store the map instance
+let map;
+export let source;
+let drawInteraction;
 
-export function initMap(targetId, typeSelectId) {
-  // Check if the map already exists and dispose of it
+export function initMap(targetId, typeSelectId = null, onNewDraw = null, holes = [], onMove = null, onSelect = null, enableDraw = false, mode = 'readonly') {
   if (map) {
     map.setTarget(null);
     map = null;
   }
 
-  const raster = new TileLayer({
-    source: new OSM(),
-  });
+  source = new VectorSource();
+  const baseLayer = new TileLayer({ source: new OSM() });
+  const vectorLayer = new VectorLayer({ source });
 
-  const source = new VectorSource();
-
-  const vector = new VectorLayer({
-    source: source,
-    style: {
-      'fill-color': 'rgba(255, 255, 255, 0.2)',
-      'stroke-color': '#ffcc33',
-      'stroke-width': 2,
-      'circle-radius': 7,
-      'circle-fill-color': '#ffcc33',
-    },
-  });
-
-  // Limit multi-world panning to one world east and west of the real world.
-  // Geometry coordinates have to be within that range.
-  const extent = get('EPSG:3857').getExtent().slice();
-  extent[0] += extent[0];
-  extent[2] += extent[2];
   map = new Map({
-    layers: [raster, vector],
     target: targetId,
+    layers: [baseLayer, vectorLayer],
     view: new View({
-      center: fromLonLat([10.75, 59.91]), // Oslo center 
+      center: fromLonLat([10.75, 59.91]),
       zoom: 6,
-      extent,
     }),
   });
 
-  // add course points from window.courseData
   if (Array.isArray(window.courseData)) {
     window.courseData.forEach((course) => {
       const coords = course.coordinates?.coordinates;
@@ -65,64 +44,171 @@ export function initMap(targetId, typeSelectId) {
         const feature = new Feature({
           geometry: new Point(fromLonLat([lon, lat])),
           name: course.name,
+          type: 'course',
         });
 
         feature.setStyle(new Style({
           image: new CircleStyle({
             radius: 6,
             fill: new Fill({ color: '#007bff' }),
-            stroke: new Stroke({ color: '#fff', width: 2 })
-          })
+            stroke: new Stroke({ color: '#fff', width: 2 }),
+          }),
         }));
 
         source.addFeature(feature);
       }
-
-      console.log(window.courseData)
     });
   }
 
-  const modify = new Modify({ source: source });
-  map.addInteraction(modify);
+  holes.forEach((hole, index) => {
+    const coords = hole.geometry?.coordinates;
+    if (Array.isArray(coords) && coords.length === 2) {
+      const [lon, lat] = coords;
 
-  let draw, snap; 
-  const typeSelect = document.getElementById(typeSelectId);
+      const feature = new Feature({
+        geometry: new Point(fromLonLat([lon, lat])),
+        type: 'hole',
+        holeNumber: index + 1,
+        holeId: hole.holeId || index + 1,
+      });
 
-  function addInteractions() {
-    draw = new Draw({
-      source: source,
-      type: typeSelect.value,
+      feature.setStyle(new Style({
+        image: new CircleStyle({
+          radius: 6,
+          fill: new Fill({ color: '#28a745' }),
+          stroke: new Stroke({ color: '#fff', width: 2 }),
+        }),
+        text: new Text({
+          text: `${index + 1}`,
+          offsetY: -15,
+          font: 'bold 12px sans-serif',
+          fill: new Fill({ color: '#000' }),
+          stroke: new Stroke({ color: '#fff', width: 3 }),
+        }),
+      }));
+
+      feature.setId(feature.get('holeId'));
+      feature.set('holeId', feature.get('holeId'));
+      source.addFeature(feature);
+    }
+  });
+
+  if (mode === 'admin') {
+    const select = new Select();
+    select.on('select', (e) => {
+      const feature = e.selected[0];
+      if (feature) {
+        const holeId = feature.get('holeId');
+        if (holeId && onSelect) onSelect(holeId);
+      }
     });
-    map.addInteraction(draw);
-    snap = new Snap({ source: source });
-    map.addInteraction(snap);
+    map.addInteraction(select);
+
+    const translate = new Translate({ features: select.getFeatures() });
+    translate.on('translateend', (e) => {
+      const feature = e.features.item(0);
+      if (feature) {
+        const coords = toLonLat(feature.getGeometry().getCoordinates());
+        const holeId = feature.get('holeId');
+        if (holeId && onMove) onMove(holeId, coords);
+      }
+    });
+    map.addInteraction(translate);
+
+    if (enableDraw && onNewDraw) {
+      enableDrawPoint(onNewDraw, source);
+    }
   }
+}
 
-  
-  typeSelect.onchange = function () {
-    map.removeInteraction(draw);
-    map.removeInteraction(snap);
-    addInteractions();
-  };
+export function enableDrawPoint(onDrawComplete, drawSource) {
+  if (!map || !drawSource) return;
 
-  addInteractions();
+  if (drawInteraction) map.removeInteraction(drawInteraction);
+
+  drawInteraction = new Draw({
+    source: drawSource,
+    type: 'Point',
+  });
+
+  drawInteraction.on('drawend', (event) => {
+    const coords = toLonLat(event.feature.getGeometry().getCoordinates());
+    onDrawComplete({ type: 'Point', coordinates: coords });
+    map.removeInteraction(drawInteraction);
+  });
+
+  map.addInteraction(drawInteraction);
 }
 
 export function flyToLocation(lon, lat, zoom = 15) {
   if (!map) return;
   map.getView().animate({
     center: fromLonLat([lon, lat]),
-    zoom: zoom,
-    duration: 500
+    zoom,
+    duration: 500,
+  });
+}
+
+export function resetMapView() {
+  if (!map) return;
+  map.getView().animate({
+    center: fromLonLat([10.75, 59.91]),
+    zoom: 6,
+    duration: 800,
+  });
+}
+
+export function addHolePointsToMap(courseId, holes) {
+  if (!map || !Array.isArray(holes)) return;
+
+  const vectorLayer = map.getLayers().getArray().find(l => l instanceof VectorLayer);
+  if (!vectorLayer) return;
+
+  const source = vectorLayer.getSource();
+  if (!source) return;
+
+  source.getFeatures().forEach(f => {
+    const type = f.get('type');
+    if (type === 'hole' || type === 'course') {
+      source.removeFeature(f);
+    }
+  });
+
+  holes.forEach((hole, index) => {
+    const coords = hole.geometry?.coordinates;
+    if (Array.isArray(coords) && coords.length === 2) {
+      const [lon, lat] = coords;
+
+      const feature = new Feature({
+        geometry: new Point(fromLonLat([lon, lat])),
+        type: 'hole',
+        holeNumber: index + 1,
+        holeId: hole.holeId || index + 1,
+      });
+
+      feature.setStyle(new Style({
+        image: new CircleStyle({
+          radius: 6,
+          fill: new Fill({ color: '#28a745' }),
+          stroke: new Stroke({ color: '#fff', width: 2 }),
+        }),
+        text: new Text({
+          text: `${index + 1}`,
+          offsetY: -15,
+          font: 'bold 12px sans-serif',
+          fill: new Fill({ color: '#000' }),
+          stroke: new Stroke({ color: '#fff', width: 3 }),
+        }),
+      }));
+
+      feature.setId(feature.get('holeId'));
+      feature.set('holeId', feature.get('holeId'));
+      source.addFeature(feature);
+    }
   });
   
 }
-export function resetMapView() {
-  if (!map) return;
-
-  map.getView().animate({
-    center: fromLonLat([10.75, 59.91]), 
-    zoom: 6,
-    duration: 800
-  });
+export function clearMapFeatures() {
+  if (!map || !source) return;
+  source.clear(); // 
 }
