@@ -47,7 +47,7 @@ const baseUrl =
 
   const fetchCourses = async () => {
     try {
-      const res = await fetch(`${baseUrl}/models/courses`);
+      const res = await fetch(baseUrl + '/models/courses');
       const data = await res.json();
       setCourses(data);
     } catch (error) {
@@ -57,7 +57,7 @@ const baseUrl =
 
   const fetchHoles = async (courseId) => {
     try {
-      const res = await fetch(`${baseUrl}/api/holes/courses/${courseId}`);
+      const res = await fetch(baseUrl + `/api/holes/courses/${courseId}`);
       const data = await res.json();
       if (Array.isArray(data)) {
         setHoleData(data);
