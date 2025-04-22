@@ -17,6 +17,11 @@ export default function BanesokPage() {
   const [holeData, setHoleData] = useState([]);
   const [viewMode, setViewMode] = useState('course');
 
+const baseUrl =
+    process.env.NODE_ENV === "production"
+      ? "https://vast-mesa-22158-90c21fc001d1.herokuapp.com"
+      : "http://localhost:5000";
+  
   useEffect(() => {
     fetchCourses();
   }, []);
@@ -42,7 +47,7 @@ export default function BanesokPage() {
 
   const fetchCourses = async () => {
     try {
-      const res = await fetch('http://localhost:5000/models/courses');
+      const res = await fetch('${baseUrl}/models/courses');
       const data = await res.json();
       setCourses(data);
     } catch (error) {
@@ -52,7 +57,7 @@ export default function BanesokPage() {
 
   const fetchHoles = async (courseId) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/holes/courses/${courseId}`);
+      const res = await fetch(`${baseUrl}/api/holes/courses/${courseId}`);
       const data = await res.json();
       if (Array.isArray(data)) {
         setHoleData(data);
