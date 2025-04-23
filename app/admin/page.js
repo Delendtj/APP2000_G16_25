@@ -13,7 +13,6 @@ export default function AdminDashboard() {
     totalMemberships: 0
   });
   const [clubData, setClubData] = useState(null);
-  const [clubUsers, setClubUsers] = useState([]);
   const [error, setError] = useState(null);
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState('');
@@ -44,7 +43,7 @@ export default function AdminDashboard() {
         const mergedUsers = await mergedUsersResponse.json();
         console.log("All users with club IDs:", mergedUsers);
         
-        // Step 2: Find the current admin's club ID
+        // Step 2: Find the current admin's club ID --- Dette kan byttes ut med å bruke Context adminClubId
         const currentUserWithClub = mergedUsers.find(u => u.userId === user.userId || u._id === user._id);
         
         if (!currentUserWithClub || !currentUserWithClub.clubId) {
@@ -67,6 +66,27 @@ export default function AdminDashboard() {
         
         const allClubsInfo = await clubInfoResponse.json();
         
+        // Step 5: Fetch courses specific to this club
+        try {
+          const coursesResponse = await fetch(`${baseUrl}/models/courses/${adminClubId}`);
+            const coursesData = await coursesResponse.json();
+            console.log(`Found ${coursesData.length} courses for club ID ${adminClubId}`);
+            
+            // Update stats with the course count
+            setStats(prevStats => ({
+              ...prevStats,
+              totalCourses: coursesData.length
+            }));
+          }
+         catch (error) {
+          console.error(`Error fetching courses for club ${adminClubId}:`, error);
+          // Don't fail the entire dashboard load if just the courses fetch fails
+          setStats(prevStats => ({
+            ...prevStats,
+            totalCourses: 0
+          }));
+        }
+
         // Find the specific club data for this admin
         const adminClubData = allClubsInfo.find(club => club.clubId.toString() === adminClubId.toString());
         
@@ -92,10 +112,10 @@ export default function AdminDashboard() {
         );
         
         // Update stats
-        setStats({
-          totalUsers: 0,
+        setStats(prevStats => ({
+          ...prevStats,
           totalMemberships: clubMemberships.length || 0
-        });
+        }));
         
       } catch (error) {
         setError(`Failed to load dashboard data: ${error.message}`);
@@ -155,8 +175,8 @@ export default function AdminDashboard() {
 
       <div className="stats-grid" style={styles.statsGrid}>
         <div className="stat-card" style={styles.statCard}>
-          <h3 style={styles.statHeader}>Total Users</h3>
-          <p className="stat-value" style={styles.statValue}>{stats.totalUsers}</p>
+          <h3 style={styles.statHeader}>Total Courses</h3>
+          <p className="stat-value" style={styles.statValue}>{stats.totalCourses}</p>
         </div>
         
         <div className="stat-card" style={styles.statCard}>
@@ -169,7 +189,9 @@ export default function AdminDashboard() {
         <h2 style={styles.actionsHeader}>Quick Actions</h2>
         <div className="action-buttons" style={styles.actionButtons}>
           <Link href={`/admin/coursemanager?clubId=${adminClubId}`} className="action-button" style={styles.actionButton}>Manage Courses</Link>
-          <a href="/../medlemsliste" className="action-button" style={styles.actionButton}>Manage Members</a>
+          <Link href={`/admin/medlemsliste?clubId=${adminClubId}`} className="action-button" style={styles.actionButton}>Manage Members</Link>
+          <Link href={`/admin/tournament?clubId=${adminClubId}`} className="action-button" style={styles.actionButton}>Manage Tournaments</Link>     
+          <Link href={`/admin/editpage?clubId=${adminClubId}`} className="action-button" style={styles.actionButton}>Manage Club Page</Link>
         </div>
       </div>
 
@@ -179,18 +201,8 @@ export default function AdminDashboard() {
         <button type="submit">Upload PDF</button>
       </form>
       {message && <p>{message}</p>}
-      
-        
-        
     </div>
-      <Link href={`/admin/tournament?clubId=${adminClubId}`} className="action-button" style={styles.actionButton}>
-        Manage Tournaments
-        </Link>
-        
-        
-        <Link href={`/admin/editpage?clubId=${adminClubId}`} className="action-button" style={styles.actionButton}>
-        Manage Club Page
-        </Link>
+   
   </>);
 }
 

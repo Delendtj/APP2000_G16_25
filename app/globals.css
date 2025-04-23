@@ -1,7 +1,6 @@
 @media (max-width: 768px) {
-  /* Mobile styles */
   header {
-    flex-direction: column; /* Stack items vertically on mobile */
+    flex-direction: column; 
     padding: 10px;
     font-size: 18px;
     justify-content: space-between;
@@ -18,14 +17,14 @@ body {
   color: white;
   display: flex;
   flex-direction: column;
-  overflow-y: scroll; /* enable vertical scrolling*/;
+  overflow-y: scroll; 
   min-height: 100vh; 
 }
 
 header {
   
   display: flex;
-  flex-direction: column; /* Stack items vertically on mobile */
+  flex-direction: column; 
   padding: 15px;
   margin: 10px;
   justify-content: space-between;
@@ -138,7 +137,7 @@ header {
 }
 
 
-/* Map styling */
+
 .map-container {
   width: 70%;
   background: #222;
@@ -153,8 +152,6 @@ header {
   border-radius: 8px;
 }
 
-
-/* Basic Styling for Course Card */
 .course-card {
   background: #444;
   border: 1px solid white;
@@ -162,10 +159,10 @@ header {
   margin-bottom: 15px;
   padding: 15px;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, max-height 0.3s ease; /* Add transition for max-height */
+  transition: transform 0.3s ease, box-shadow 0.3s ease, max-height 0.3s ease; 
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
-  max-height: 200px; /* Set an initial height */
-  overflow: hidden; /* Hide content when collapsed */
+  max-height: 200px; 
+  overflow: hidden; 
 }
 
 .course-card:hover {
@@ -173,23 +170,20 @@ header {
   box-shadow: 2px 2px 12px rgba(255, 255, 255, 0.3);
 }
 
-/* When the course card is expanded */
 .course-card.expanded {
   background: #555;
   padding: 20px;
   border: 2px solid white;
-  max-height: 600px; /* Expanded height */
-  overflow: visible; /* Allow content to overflow when expanded */
+  max-height: 600px; 
+  overflow: visible; 
 }
 
-/* Course Details when expanded */
 .course-details {
   margin-top: 10px;
   font-size: 14px;
   color: black;
 }
 
-/* Styling for reviews inside course cards */
 .course-details h4 {
   margin-top: 10px;
   font-size: 1rem;

@@ -1,12 +1,13 @@
 'use client';
-//CHATGPT
 import { useAuth } from "../../module/context";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Header from '../../components/Header';
+import Link from 'next/link';
+import "./admin.css";
 
 export default function AdminLayout({ children }) {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, adminClubId } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -30,54 +31,22 @@ export default function AdminLayout({ children }) {
         <div className="admin-sidebar">
           <h2>Admin Panel</h2>
           <nav>
-            <ul>
-              <li><a href="/admin">Dashboard</a></li>
-              <li><a href="/admin/users">Manage Courses</a></li>
-              <li><a href="/admin/memberships">Manage Memberships</a></li>
-            </ul>
+              <ul><Link href="/admin">Dashboard</Link></ul>
+              {adminClubId && (
+                <>
+                  <ul><Link href={`/admin/coursemanager?clubId=${adminClubId}`}>Manage Courses</Link></ul>
+                  <ul><Link href={`/admin/medlemsliste?clubId=${adminClubId}`}>Manage Members</Link></ul>
+                  <ul><Link href={`/admin/tournament?clubId=${adminClubId}`}>Manage Tournaments</Link></ul>
+                  <ul><Link href={`/admin/editpage?clubId=${adminClubId}`}>Manage Club Page</Link></ul>
+                </>
+              )}
+            
           </nav>
         </div>
         <main className="admin-content">
           {children}
         </main>
       </div>
-      <style jsx>{`
-        .admin-layout {
-          display: flex;
-          min-height: calc(100vh - 60px);
-        }
-        .admin-sidebar {
-          width: 0.5rm;
-          background: #1a1a1a;
-          padding: 20px;
-          color: white;
-        }
-        .admin-sidebar h2 {
-          margin-bottom: 20px;
-          padding-bottom: 10px;
-          border-bottom: 1px solid #444;
-        }
-        .admin-sidebar li {
-          margin: 10px 0;z
-        }
-        .admin-sidebar a {
-          color: #ddd;
-          text-decoration: none;
-          display: block;
-          padding: 8px 10px;
-          border-radius: 5px;
-          transition: background 0.3s;
-        }
-        .admin-sidebar a:hover {
-          background: #333;
-          color: white;
-        }
-        .admin-content {
-          flex: 1;
-          padding: 20px;
-          background: #2c2c2c;
-        }
-      `}</style>
     </>
   );
 }

@@ -4,47 +4,48 @@ const User = require('../models/User');
 const Membership = require('../models/Membership');
 
 router.get("/usersbyclub/:clubId", async (req, res) => {
-    const { clubId } = req.params;
+  const { clubId } = req.params;
+  
+  try {
+    // Find all memberships for the given clubId
+    const memberships = await Membership.find({ clubId });
     
-    console.log(`API Request: /usersbyclub/${clubId}`);
-    
-    if (!clubId) {
-      return res.status(400).json({ error: "Club ID is required" });
+    if (memberships.length === 0) {
+      return res.status(200).json([]);
     }
     
-    try {
-      console.log(`Fetching memberships for club ID: ${clubId}`);
-      
-      // Find all memberships for the given clubId
-      const memberships = await Membership.find({ clubId });
-      console.log(`Found ${memberships.length} memberships for club ${clubId}`);
-      
-      if (memberships.length === 0) {
-        return res.status(200).json([]);
-      }
-      
-      // Extract userIds from memberships
-      const userIds = memberships.map(membership => membership.userId);
-      
-      // Fetch users whose IDs match the userIds from memberships
-      const users = await User.find({ userId: { $in: userIds } }, "-passwordhash");
-      console.log(`Found ${users.length} users for club ${clubId}`);
-      
-      // Add clubId to each user object
-      const usersWithClub = users.map(user => ({
-        ...user.toObject(),
-        clubId
-      }));
-      
-      return res.status(200).json(usersWithClub);
-      
-    } catch (error) {
-      console.error(`Error fetching users for club ${req.params.clubId}:`, error);
-      return res.status(500).json({ 
-        error: "Internal Server Error", 
-        message: error.message 
-      });
-    }
-  });
+    // Create a map of userId to membershipId
+    const membershipMap = {};
+    memberships.forEach(membership => {
+      membershipMap[membership.userId] = {
+        membershipId: membership.membershipId,
+        membershipStatus: membership.membershipStatus
+      };
+    });
+    
+    // Extract userIds from memberships
+    const userIds = memberships.map(membership => membership.userId);
+    
+    // Fetch users whose IDs match the userIds from memberships
+    const users = await User.find({ userId: { $in: userIds } }, "-passwordhash");
+    
+    // Add membership details to each user object
+    const usersWithMembership = users.map(user => {
+      const userObj = user.toObject();
+      const userId = userObj.userId.toString();
+      return {
+        ...userObj,
+        clubId,
+        membershipId: membershipMap[userId]?.membershipId,
+        membershipStatus: membershipMap[userId]?.membershipStatus || 'inactive'
+      };
+    });
+    
+    return res.status(200).json(usersWithMembership);
+  } catch (error) {
+    console.error(`Error fetching users for club ${clubId}:`, error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
-  module.exports = router;
+module.exports = router;

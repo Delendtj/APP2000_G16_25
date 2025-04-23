@@ -7,7 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import { useSearchParams } from 'next/navigation';
 
 export default function EditClubPage() {
-  const { user } = useAuth();
+  const { user, adminClubId } = useAuth();
   const router = useRouter();
   const [pageTitle, setPageTitle] = useState("");
   const [pageContent, setPageContent] = useState("");
@@ -15,8 +15,6 @@ export default function EditClubPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [editMode, setEditMode] = useState(true);
-  const searchParams = useSearchParams();
-  const clubId = searchParams.get('clubId');
   const baseUrl = process.env.NODE_ENV === 'production'
           ? 'https://vast-mesa-22158-90c21fc001d1.herokuapp.com'
           : 'http://localhost:5000';
@@ -30,7 +28,7 @@ useEffect(() => {
         setLoading(true);
         
         // Fetch existing page content for the club
-        const pageDataResponse = await fetch(`${baseUrl}/api/clubs/${clubId}/page`);
+        const pageDataResponse = await fetch(`${baseUrl}/api/clubs/${adminClubId}/page`);
         if (pageDataResponse.ok) {
           const pageData = await pageDataResponse.json();
           if (pageData) {
@@ -69,7 +67,7 @@ useEffect(() => {
         ? 'https://vast-mesa-22158-90c21fc001d1.herokuapp.com'
         : 'http://localhost:5000';
 
-      const response = await fetch(`${baseUrl}/api/clubs/${clubId}/page`, {
+      const response = await fetch(`${baseUrl}/api/clubs/${adminClubId}/page`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,7 +1,5 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import Head from 'next/head';
-import Header from "../../../components/Header";
 import CourseCard from '../../../components/CourseCard';
 import { useAuth } from '../../../module/context';
 import '../../globals2.css';
@@ -133,8 +131,6 @@ const baseUrl =
 
   return (
     <>
-      <Head><title>Endre baner</title></Head>
-      <Header />
       <div className="container">
         <h1>Endre baner {hasAdminAccess && <span style={{ fontSize: '0.7em', color: '#28a745' }}>(Admin tilgang)</span>}</h1>
 
@@ -192,7 +188,7 @@ const baseUrl =
           </div>
 
           <div className="map-container">
-            <div id="map" style={{ width: '100%', height: '500px' }}></div>
+            <div id="map" style={{ width: '100%', height: "500px" }}></div>
 
             {hasAdminAccess && selectedCourse && !addingNew && (
               <button style={{ marginTop: '10px' }} onClick={() => {
