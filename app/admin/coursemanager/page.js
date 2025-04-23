@@ -129,6 +129,25 @@ const baseUrl =
   const uniqueHoles = [...new Set(courses.map(c => c.numberOfHoles))].sort((a, b) => a - b);
   const uniqueClubs = [...new Set(courses.map(c => c.clubId))];
 
+  const filteredCourses = courses
+    .filter(course =>
+      (!difficultyFilter || course.difficulty === difficultyFilter) &&
+      (!holeFilter || course.numberOfHoles === parseInt(holeFilter)) &&
+      (!clubFilter || course.clubId.toString() === clubFilter) &&
+      (!search || course.name.toLowerCase().includes(search.toLowerCase()))
+    )
+    .sort((a, b) => {
+      if (sortBy === "name") return a.name.localeCompare(b.name);
+      if (sortBy === "holes") return a.numberOfHoles - b.numberOfHoles;
+      if (sortBy === "rating") {
+        const avgA = (a.reviews?.reduce((s, r) => s + r.rating, 0) || 0) / (a.reviews?.length || 1);
+        const avgB = (b.reviews?.reduce((s, r) => s + r.rating, 0) || 0) / (b.reviews?.length || 1);
+        return avgB - avgA;
+      }
+      return 0;
+    });
+
+
   return (
     <>
       <div className="container">
