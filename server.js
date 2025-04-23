@@ -28,6 +28,7 @@ const pdfroute = require('./module/pdfs');
 const tournamentscreateRoute = require('./module/tournaments');
 const coursesroute = require('./module/coursesRoute');
 const holeRoute = require('./module/holeRoute');
+const editpage = require('./module/clubPage'); // 
 
 // Prepare Next.js start Express server
 app.prepare().then(() => {
@@ -108,7 +109,7 @@ server.use('/api', pdfroute);
 server.use('/api', tournamentscreateRoute);
 server.use('/api', holeRoute);
 server.use('/api', coursesroute);
-
+server.use('/api', editpage);
 
 server.get("/api/users", async (req, res) => {
   try {

@@ -201,6 +201,9 @@ export default function AdminDashboard() {
       <Link href={`/admin/tournament?clubId=${adminClubId}`} className="action-button" style={styles.actionButton}>
         Manage Tournaments
         </Link>
+        <Link href={`/admin/editpage?clubId=${adminClubId}`} className="action-button" style={styles.actionButton}>
+        Manage Club Page
+        </Link>
   </>);
 }
 
