@@ -171,7 +171,7 @@ const baseUrl =
 
         <div className="main-content">
           <div className="course-list">
-            {courses.map(course => (
+            {filteredCourses.map(course => (
               <CourseCard key={course._id} course={course} onClick={() => {
                 const coords = course.coordinates?.coordinates;
                 if (Array.isArray(coords)) {
