@@ -32,9 +32,8 @@ export default function AdminLayout({ children }) {
           <nav>
             <ul>
               <li><a href="/admin">Dashboard</a></li>
-              <li><a href="/admin/users">Manage Users</a></li>
+              <li><a href="/admin/users">Manage Courses</a></li>
               <li><a href="/admin/memberships">Manage Memberships</a></li>
-              <li><a href="/admin/clubs">Manage Clubs</a></li>
             </ul>
           </nav>
         </div>
@@ -48,7 +47,7 @@ export default function AdminLayout({ children }) {
           min-height: calc(100vh - 60px);
         }
         .admin-sidebar {
-          width: 250px;
+          width: 0.5rm;
           background: #1a1a1a;
           padding: 20px;
           color: white;
@@ -58,12 +57,8 @@ export default function AdminLayout({ children }) {
           padding-bottom: 10px;
           border-bottom: 1px solid #444;
         }
-        .admin-sidebar ul {
-          list-style: none;
-          padding: 0;
-        }
         .admin-sidebar li {
-          margin: 10px 0;
+          margin: 10px 0;z
         }
         .admin-sidebar a {
           color: #ddd;

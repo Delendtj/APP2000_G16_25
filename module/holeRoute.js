@@ -3,43 +3,6 @@ const router = express.Router();
 const Hole = require("../models/hole");
 const Course = require("../models/courses");
 
-const verifyAccess = async (req, res, next) => {
-  try {
-    let courseId = req.body.courseId;
-
-    if (!courseId && req.params.id) {
-      const Hole = require('../models/hole');
-      const hole = await Hole.findById(req.params.id);
-      if (hole) courseId = hole.courseId;
-    }
-
-    if (!courseId) {
-      return res.status(400).json({ error: "courseId mangler." });
-    }
-
-    const Course = require('../models/courses');
-    const course = await Course.findOne({ courseId });
-
-    if (!course) {
-      return res.status(404).json({ error: "Bane ikke funnet." });
-    }
-
-    const user = req.body.user || JSON.parse(req.headers['authorization'] || '{}');
-
-   
-    if (!user || !user.isAdmin) {
-      return res.status(403).json({ error: "Ingen tilgang – kun admin kan redigere." });
-    }
-
-    req.course = course;
-    req.user = user;
-    next();
-  } catch (error) {
-    console.error("Feil i tilgangssjekk:", error);
-    return res.status(500).json({ error: "Serverfeil under tilgangssjekk." });
-  }
-};
-
 
 const loadHoleAndCourse = async (req, res, next) => {
   try {
@@ -56,7 +19,7 @@ const loadHoleAndCourse = async (req, res, next) => {
 };
 
 // Opprett nytt hull
-router.post("/holes", verifyAccess, async (req, res) => {
+router.post("/holes", async (req, res) => {
   try {
     const newHole = new Hole(req.body);
     await newHole.save();
@@ -68,7 +31,7 @@ router.post("/holes", verifyAccess, async (req, res) => {
 });
 
 // Oppdater hull
-router.put("/holes/:id", loadHoleAndCourse, verifyAccess, async (req, res) => {
+router.put("/holes/:id", loadHoleAndCourse, async (req, res) => {
   try {
     const updatedHole = await Hole.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updatedHole) {
@@ -82,7 +45,7 @@ router.put("/holes/:id", loadHoleAndCourse, verifyAccess, async (req, res) => {
 });
 
 // Slett hull
-router.delete("/holes/:id", loadHoleAndCourse, verifyAccess, async (req, res) => {
+router.delete("/holes/:id", loadHoleAndCourse, async (req, res) => {
   try {
     await Hole.findByIdAndDelete(req.params.id);
     res.json({ message: "Hull slettet" });

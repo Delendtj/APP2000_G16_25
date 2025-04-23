@@ -24,7 +24,7 @@ const styles = {
     container: {
       display: 'flex',
       justifyContent: 'center',
-      height: '100vh', // Full viewport height
+      height: '100vh', 
       textAlign: 'center',
       padding: '20px',
       fontFamily: 'Arial, sans-serif',

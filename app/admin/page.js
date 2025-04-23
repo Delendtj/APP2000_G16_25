@@ -9,8 +9,7 @@ import Link from 'next/link';
 export default function AdminDashboard() {
   const { user } = useAuth();
   const [stats, setStats] = useState({
-    totalUsers: 0,
-    totalClubs: 0,
+    totalcourses: 0,
     totalMemberships: 0
   });
   const [clubData, setClubData] = useState(null);
@@ -59,15 +58,6 @@ export default function AdminDashboard() {
         setAdminClubId(adminClubId);
         console.log(`Found admin's club ID: ${adminClubId}`);
         
-        // Step 3: Fetch users for this specific club ID using usersbyclub
-        const clubUsersResponse = await fetch(`${baseUrl}/api/usersbyclub/${adminClubId}`);
-        if (!clubUsersResponse.ok) {
-          throw new Error(`Failed to fetch club users: ${clubUsersResponse.status}`);
-        }
-        
-        const clubUsersData = await clubUsersResponse.json();
-        console.log(`Users for club ${adminClubId}:`, clubUsersData);
-        setClubUsers(clubUsersData);
         
         // Step 4: Fetch detailed club information using clubinfo
         const clubInfoResponse = await fetch(`${baseUrl}/api/klubbinfo`);
@@ -103,8 +93,7 @@ export default function AdminDashboard() {
         
         // Update stats
         setStats({
-          totalUsers: clubUsersData.length || 0,
-          totalClubs: 1, // Admin can only see their own club
+          totalUsers: 0,
           totalMemberships: clubMemberships.length || 0
         });
         
@@ -169,10 +158,7 @@ export default function AdminDashboard() {
           <h3 style={styles.statHeader}>Total Users</h3>
           <p className="stat-value" style={styles.statValue}>{stats.totalUsers}</p>
         </div>
-        <div className="stat-card" style={styles.statCard}>
-          <h3 style={styles.statHeader}>Total Clubs</h3>
-          <p className="stat-value" style={styles.statValue}>{stats.totalClubs}</p>
-        </div>
+        
         <div className="stat-card" style={styles.statCard}>
           <h3 style={styles.statHeader}>Total Memberships</h3>
           <p className="stat-value" style={styles.statValue}>{stats.totalMemberships}</p>
@@ -182,9 +168,8 @@ export default function AdminDashboard() {
       <div className="admin-actions" style={styles.adminActions}>
         <h2 style={styles.actionsHeader}>Quick Actions</h2>
         <div className="action-buttons" style={styles.actionButtons}>
-          <a href="/admin/users" className="action-button" style={styles.actionButton}>Manage Users</a>
-          <a href="/../medlemsliste" className="action-button" style={styles.actionButton}>Manage Memberships</a>
-          <a href="/../courseadmin" className="action-button" style={styles.actionButton}>Manage Clubs</a>
+          <Link href={`/admin/coursemanager?clubId=${adminClubId}`} className="action-button" style={styles.actionButton}>Manage Courses</Link>
+          <a href="/../medlemsliste" className="action-button" style={styles.actionButton}>Manage Members</a>
         </div>
       </div>
 
@@ -201,6 +186,8 @@ export default function AdminDashboard() {
       <Link href={`/admin/tournament?clubId=${adminClubId}`} className="action-button" style={styles.actionButton}>
         Manage Tournaments
         </Link>
+        
+        
         <Link href={`/admin/editpage?clubId=${adminClubId}`} className="action-button" style={styles.actionButton}>
         Manage Club Page
         </Link>

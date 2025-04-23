@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useAuth } from '../module/context';
+import './stylenav.css';
 
 
 export default function Header() {
@@ -20,13 +21,12 @@ export default function Header() {
                     {!user && <li><Link href="/logginn">Logg Inn</Link></li>}
                     {user && (
                         <>
-                            <li><Link href="/profil">Profil</Link></li>
-                            {isAdmin() && <li><Link href="/admin">Admin Panel</Link></li>}
-                            <li>
-                                <button onClick={logout} style={{ background: 'brown', color: 'white', cursor: 'pointer' }}>
-                                   LOGG UT  
-                                </button>
-                            </li>
+                        <li><Link href="/profil">Profil</Link></li>
+                        {isAdmin() && <li><Link href="/admin">Admin Panel</Link></li>}
+                        <button onClick={logout} style={{ background: 'brown', color: 'white', cursor: 'pointer' }}>    
+                            LOGG UT      
+                        </button>            
+                            
                         </>
                     )}
                 </ul>

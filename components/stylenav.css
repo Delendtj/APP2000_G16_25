@@ -1,0 +1,33 @@
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-direction: column; 
+    gap: 10px; 
+    flex-direction: row; 
+    display: flex;
+  }
+  
+  nav ul li {
+    margin: 0 15px;
+  }
+  
+  nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.1rem;
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+  nav a:hover {
+    color: #0b0500;
+    transform: scale(1.05);
+  }
+  
+  nav a, button {
+    padding: 10px; /* Bigger tap area */
+    min-width: 48px; /* Recommended min touch size */
+    min-height: 48px;
+  }
+  

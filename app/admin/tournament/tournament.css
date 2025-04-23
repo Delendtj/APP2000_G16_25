@@ -1,0 +1,183 @@
+/* CSS Variables tweaked by claude ai with "can you make this responsive" 
+*/
+:root {
+  /* Core variables only */
+  --primary: #973232;
+  --primary-hover: #7c2a2a;
+  --bg-dark: #2c2c2c;
+  --bg-card: #444;
+  --bg-panel: #3c1e1e;
+  --text-light: #fff;
+  --text-dark: #333;
+  --success: #4CAF50;
+  --error: #d32f2f;
+  --space: 1rem;
+  --radius: 8px;
+}
+
+/* Base container */
+.admin-container {
+  max-width: min(1000px, 90vw);
+  margin: 0 auto;
+  padding: var(--space);
+  background-color: var(--bg-panel);
+  border-radius: var(--radius);
+  color: var(--text-light);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Headings */
+.admin-container h1 {
+  font-size: 2rem;
+  margin-bottom: var(--space);
+  text-align: center;
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: calc(var(--space) * 0.5);
+}
+
+.admin-container h2 {
+  font-size: 1.5rem;
+  margin-top: calc(var(--space) * 2);
+  margin-bottom: var(--space);
+}
+
+/* Form elements */
+.tournament-form {
+  background-color: var(--bg-card);
+  padding: var(--space);
+  border-radius: var(--radius);
+  margin-bottom: calc(var(--space) * 2);
+}
+
+.form-group {
+  margin-bottom: var(--space);
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: calc(var(--space) * 0.5);
+  font-weight: bold;
+}
+
+.form-group input {
+  width: 100%;
+  padding: calc(var(--space) * 0.7);
+  border: 1px solid #ccc;
+  border-radius: calc(var(--radius) * 0.5);
+  background-color: white;
+  color: var(--text-dark);
+}
+
+.form-group input:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+/* Buttons */
+.form-actions {
+  display: flex;
+  gap: var(--space);
+  margin-top: var(--space);
+}
+
+button {
+  padding: calc(var(--space) * 0.7) var(--space);
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: calc(var(--radius) * 0.5);
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--primary-hover);
+}
+
+.cancel-button {
+  background-color: #666;
+}
+
+/* Message display */
+.message {
+  padding: var(--space);
+  border-radius: calc(var(--radius) * 0.5);
+  margin: var(--space) 0;
+  text-align: center;
+  font-weight: 500;
+  background-color: var(--success);
+  color: white;
+}
+
+.message.error {
+  background-color: var(--error);
+}
+
+/* Tournament list */
+.tournament-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space);
+}
+
+.tournament-item {
+  background-color: var(--bg-card);
+  padding: var(--space);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+}
+
+.tournament-info {
+  flex: 1;
+}
+
+.tournament-info h3 {
+  margin-top: 0;
+  margin-bottom: calc(var(--space) * 0.5);
+  border-bottom: 1px solid var(--primary);
+  padding-bottom: calc(var(--space) * 0.3);
+}
+
+/* Tournament actions */
+.tournament-actions {
+  display: flex;
+  gap: calc(var(--space) * 0.5);
+  margin-top: var(--space);
+  justify-content: flex-end;
+}
+
+.edit-button {
+  background-color: var(--primary);
+}
+
+.delete-button {
+  background-color: var(--error);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .tournament-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .tournament-actions {
+    flex-direction: column;
+  }
+  
+  .edit-button, .delete-button {
+    width: 100%;
+    margin-bottom: calc(var(--space) * 0.5);
+  }
+}

@@ -34,40 +34,6 @@ header {
   background: linear-gradient(90deg, #f5f5f5, #973232);
 }
 
-
-
-nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  flex-direction: column; /* Stack nav links vertically */
-  gap: 10px; /* Add spacing between links */
-  flex-direction: row; /* Horizontal nav on desktop */
-  display: flex;
-}
-
-nav ul li {
-  margin: 0 15px;
-}
-
-nav a {
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 1.1rem;
-  transition: color 0.3s ease, transform 0.3s ease;
-}
-nav a:hover {
-  color: #0b0500;
-  transform: scale(1.05);
-}
-
-nav a, button {
-  padding: 10px; /* Bigger tap area */
-  min-width: 48px; /* Recommended min touch size */
-  min-height: 48px;
-}
-
 .container {
   display: flex;
   flex: 1;
@@ -131,12 +97,6 @@ nav a, button {
   padding: 20px;
 }
 
-h1 {
-  
-  font-size: 2rem;
-  color: #973232; /* Darker color for the title */
-  text-shadow: 1px 1px 2px rgb(255, 253, 253); /* Subtle shadow for depth */
-}
 
 .search-bar {
   margin-bottom: 20px;
@@ -156,14 +116,13 @@ h1 {
 
 .main-content {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Two equal columns */
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
   justify-content: space-between;
   margin-top: 20px;
   width: 100%;
 }
 
-/* Updated course-list with better scrolling and color */
 .course-list {
   width: 30%;
   background: #3c1e1e;
