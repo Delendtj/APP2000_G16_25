@@ -82,7 +82,25 @@ const baseUrl =
     window.courseData = courses;
     initMap('map', null, null, [], null, null, false, 'readonly');
   };
-
+const filteredCourses = courses
+     .filter(course =>
+       (!difficultyFilter || course.difficulty === difficultyFilter) &&
+       (!holeFilter || course.numberOfHoles === parseInt(holeFilter)) &&
+       (!clubFilter || course.clubId.toString() === clubFilter) &&
+       (!search || course.name.toLowerCase().includes(search.toLowerCase()))
+     )
+     .sort((a, b) => {
+       if (sortBy === "name") return a.name.localeCompare(b.name);
+       if (sortBy === "holes") return a.numberOfHoles - b.numberOfHoles;
+       if (sortBy === "rating") {
+         const avgA = (a.reviews?.reduce((s, r) => s + r.rating, 0) || 0) / (a.reviews?.length || 1);
+         const avgB = (b.reviews?.reduce((s, r) => s + r.rating, 0) || 0) / (b.reviews?.length || 1);
+         return avgB - avgA;
+       }
+       return 0;
+     });
+ 
+ 
   return (
     <>
       <Head><title>Baner</title></Head>
@@ -122,7 +140,7 @@ const baseUrl =
 
         <div className="main-content">
           <div className="course-list">
-            {courses.map(course => (
+            {filteredCourses.map(course => (
               <CourseCard key={course._id} course={course} onClick={() => {
                 const coords = course.coordinates?.coordinates;
                 if (Array.isArray(coords)) {
