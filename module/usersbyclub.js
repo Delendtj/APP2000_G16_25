@@ -3,18 +3,19 @@ const router = express.Router();
 const User = require('../models/User');
 const Membership = require('../models/Membership');
 
+//DL 
 router.get("/usersbyclub/:clubId", async (req, res) => {
   const { clubId } = req.params;
   
   try {
-    // Find all memberships for the given clubId
+    // finn alle members for CId
     const memberships = await Membership.find({ clubId });
     
     if (memberships.length === 0) {
       return res.status(200).json([]);
     }
     
-    // Create a map of userId to membershipId
+    //lag en map fra UId til MId
     const membershipMap = {};
     memberships.forEach(membership => {
       membershipMap[membership.userId] = {
@@ -23,13 +24,13 @@ router.get("/usersbyclub/:clubId", async (req, res) => {
       };
     });
     
-    // Extract userIds from memberships
+    //få MId fra map
     const userIds = memberships.map(membership => membership.userId);
     
-    // Fetch users whose IDs match the userIds from memberships
+    // match
     const users = await User.find({ userId: { $in: userIds } }, "-passwordhash");
     
-    // Add membership details to each user object
+    // Add details til object
     const usersWithMembership = users.map(user => {
       const userObj = user.toObject();
       const userId = userObj.userId.toString();

@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 //DL
-// Define the Counter schema and model
+
+// Chatgpt - Define the Counter schema and model
 const counterSchema = new mongoose.Schema({
   _id: { type: String, required: true },
   seq: { type: Number, default: 0 },
@@ -41,7 +42,6 @@ UserSchema.pre('save', async function(next) {
     this.userId = counter.seq;
   }
 
-  // Set isAdmin flag if membershipStatus is admin
   if (this.membershipStatus === 'admin') {
     this.isAdmin = true;
   }

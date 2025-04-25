@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const Tournament = require('../models/tournaments');
 
-// lagd av DL
+//DL
 router.post('/tournaments', async (req, res) => {
   const { name, startDate, endDate, location, courseId, clubId, userId } = req.body;
-
+//refer til model for req fields
   if (!name || !startDate || !endDate || !location || !courseId || !clubId || !userId) {
     return res.status(400).json({ error: 'All fields are required.' });
   }
@@ -14,6 +14,7 @@ router.post('/tournaments', async (req, res) => {
     const tournament = new Tournament({ name, startDate, endDate, location, courseId, clubId, userId });
     await tournament.save();
     res.status(201).json({ message: 'Tournament created successfully!', tournament });
+    //save og cofirm
   } catch (error) {
     console.error('Error creating tournament:', error);
     res.status(500).json({ error: 'Failed to create tournament.' });

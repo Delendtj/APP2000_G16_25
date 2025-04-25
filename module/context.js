@@ -3,7 +3,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 const AuthContext = createContext();
-
+//DL og ChatGPT
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);  
@@ -34,7 +34,9 @@ export function AuthProvider({ children }) {
         setLoading(false); 
     }, []);
     
-    // Fetch admin's club ID
+    // hneter adminClubId og putter i localstorage for admin panel
+    //DL og ChatGPT
+    //bedre enn løsningen fra før lol
     const fetchAdminClubId = async (userData) => {
         try {
             const baseUrl = process.env.NODE_ENV === "production"
@@ -54,7 +56,7 @@ export function AuthProvider({ children }) {
             if (currentUserWithClub && currentUserWithClub.clubId) {
                 setAdminClubId(currentUserWithClub.clubId);
                 
-                // Store the club ID in localStorage as well
+                
                 const updatedUser = { ...userData, adminClubId: currentUserWithClub.clubId };
                 localStorage.setItem("user", JSON.stringify(updatedUser));
                 setUser(updatedUser);
@@ -76,7 +78,7 @@ export function AuthProvider({ children }) {
                 fetchAdminClubId(userData);
             }
             
-            // Redirect to the main page after login
+            // Redirect
             router.push("/");
         } else {
             console.error("Invalid user data received during login");
@@ -90,7 +92,7 @@ export function AuthProvider({ children }) {
         router.push("/logginn");
     };
 
-    // Function to check if user is admin
+    // isAdmin
     const isAdmin = () => {
         return user && (user.isAdmin === true);
     };

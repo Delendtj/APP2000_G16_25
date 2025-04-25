@@ -34,7 +34,7 @@ export default function AdminDashboard() {
         
         console.log("Current logged-in user:", user);
 
-        // Step 1: First, get all users with their club IDs using usermerge
+        // get all users med cId
         const mergedUsersResponse = await fetch(`${baseUrl}/api/usersclub`);
         if (!mergedUsersResponse.ok) {
           throw new Error(`Failed to fetch merged users: ${mergedUsersResponse.status}`);
@@ -43,7 +43,7 @@ export default function AdminDashboard() {
         const mergedUsers = await mergedUsersResponse.json();
         console.log("All users with club IDs:", mergedUsers);
         
-        // Step 2: Find the current admin's club ID --- Dette kan byttes ut med å bruke Context adminClubId
+        //Find the current admin's club ID --- Dette kan byttes ut med å bruke Context adminClubId
         const currentUserWithClub = mergedUsers.find(u => u.userId === user.userId || u._id === user._id);
         
         if (!currentUserWithClub || !currentUserWithClub.clubId) {
@@ -58,7 +58,7 @@ export default function AdminDashboard() {
         console.log(`Found admin's club ID: ${adminClubId}`);
         
         
-        // Step 4: Fetch detailed club information using clubinfo
+        // fullstendig clubinfo
         const clubInfoResponse = await fetch(`${baseUrl}/api/klubbinfo`);
         if (!clubInfoResponse.ok) {
           throw new Error(`Failed to fetch club info: ${clubInfoResponse.status}`);
@@ -66,7 +66,7 @@ export default function AdminDashboard() {
         
         const allClubsInfo = await clubInfoResponse.json();
         
-        // Step 5: Fetch courses specific to this club
+        // courses til cId
         try {
           const coursesResponse = await fetch(`${baseUrl}/models/courses/${adminClubId}`);
             const coursesData = await coursesResponse.json();
@@ -87,7 +87,7 @@ export default function AdminDashboard() {
           }));
         }
 
-        // Find the specific club data for this admin
+        // finn cId for denne admin
         const adminClubData = allClubsInfo.find(club => club.clubId.toString() === adminClubId.toString());
         
         if (!adminClubData) {
@@ -98,7 +98,7 @@ export default function AdminDashboard() {
           setClubData(adminClubData);
         }
         
-        // Step 5: Fetch all memberships
+        // get all memberships
         const membershipsResponse = await fetch(`${baseUrl}/api/memberships`);
         if (!membershipsResponse.ok) {
           throw new Error(`Failed to fetch memberships: ${membershipsResponse.status}`);
@@ -106,7 +106,7 @@ export default function AdminDashboard() {
         
         const membershipsData = await membershipsResponse.json();
         
-        // Filter memberships for this club
+        // Filter memberships cId
         const clubMemberships = membershipsData.filter(
           membership => membership.clubId.toString() === adminClubId.toString()
         );

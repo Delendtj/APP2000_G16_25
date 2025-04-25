@@ -24,7 +24,7 @@ export default function AdminLayout({ children }) {
     return <div>Checking authorization...</div>;
   }
 
-  return (
+  return (//bruk adminClubId fra context
     <>
       <Header />
       <div className="admin-layout">

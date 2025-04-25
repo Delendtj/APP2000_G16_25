@@ -2,12 +2,12 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const Membership = require('../models/Membership');
-
+//DL
 router.get("/usersclub", async (req, res) => {
   try {
     console.log("Fetching users with club IDs...");
     
-    // Fetch all memberships
+    // find alt
     const memberships = await Membership.find();
     console.log(`Found ${memberships.length} memberships`);
     
@@ -15,7 +15,7 @@ router.get("/usersclub", async (req, res) => {
       return res.status(200).json([]);
     }
 
-    // Create a map of userId to membership details
+    // Create map av UId til MId
     const userClubMap = {};
     memberships.forEach((membership) => {
       userClubMap[membership.userId] = {
@@ -26,7 +26,7 @@ router.get("/usersclub", async (req, res) => {
     
     console.log(`Created user-club map with ${Object.keys(userClubMap).length} entries`);
     
-    // Get all userIds from the map
+    // Get uId fra map
     const userIds = Object.keys(userClubMap);
     const users = await User.find({ userId: { $in: userIds } }, "-passwordhash");    
 

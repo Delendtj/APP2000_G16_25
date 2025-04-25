@@ -26,7 +26,7 @@ export default function Logginn() {
             const baseUrl =
             process.env.NODE_ENV === 'production'
               ? 'https://vast-mesa-22158-90c21fc001d1.herokuapp.com'  // Heroku APP URL
-              : 'http://localhost:5000';  // Local URL for dev
+              : 'http://localhost:5000';  
   
             const response = await fetch(`${baseUrl}/api/users`, {
                 method: "POST",

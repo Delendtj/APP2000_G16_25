@@ -7,11 +7,12 @@ import Header from "../../components/Header";
 import Head from "next/head";
 import "./profil.css"; 
 
+//DL
 export default function Profile() {
     const { user, logout, login } = useAuth();  
     const router = useRouter();  
 
-    // State to manage form inputs and messages
+    // State to manage inputs
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
@@ -19,7 +20,7 @@ export default function Profile() {
     const [staticFirstName, setHeaderFirstName] = useState("");
     const [staticLastName, setHeaderLastName] = useState("");
 
-    // State for membership and club details
+    //membership and club state
     const [membershipId, setMembershipId] = useState(null);
     const [clubName, setClubName] = useState(null);
 
@@ -38,7 +39,7 @@ export default function Profile() {
         }
     }, []);
 
-    // Fetch membership details
+    //membership details
     const fetchMembershipDetails = async (userId) => {
         try {
             const response = await fetch(`/api/usersclub`);
@@ -48,13 +49,13 @@ export default function Profile() {
 
             const usersWithClubs = await response.json();
 
-            // Find the current user's membership details
+            // Finn UId
             const currentUser = usersWithClubs.find((user) => user.userId === userId);
 
             if (currentUser) {
                 setMembershipId(currentUser.membershipId || "N/A");
 
-                // Fetch the club name using the clubId
+                // Fetch club name 
                 if (currentUser.clubId) {
                     const clubResponse = await fetch(`/api/klubber/${currentUser.clubId}`);
                     if (!clubResponse.ok) {
@@ -74,7 +75,7 @@ export default function Profile() {
         }
     };
 
-    // Handle profile update
+    //profile update
     const handleUpdate = async (e) => {
         e.preventDefault();
         setMessage("");
@@ -84,7 +85,7 @@ export default function Profile() {
             return;
         }
     
-        try {
+        try {//put oppdaterer data
             const response = await fetch("/api/update-profile", {
                 method: "PUT",
                 headers: {
@@ -105,7 +106,7 @@ export default function Profile() {
         
                 const updatedUser = { ...user, firstName, lastName, email };
                 
-                // Update localStorage
+                // Update 
                 localStorage.setItem("user", JSON.stringify(updatedUser));
                 
                 login(updatedUser);
@@ -120,7 +121,7 @@ export default function Profile() {
         }
     };
     
-    // Handle account deletion
+    //account deletion
     const handleDelete = async () => {
         const storedUser = JSON.parse(localStorage.getItem("user")); 
     
@@ -145,9 +146,9 @@ export default function Profile() {
             const data = await response.json();
 
             if (response.ok) {
-                localStorage.removeItem("user");  // Clear localStorage after deletion
+                localStorage.removeItem("user");  // Clear localStorage
                 alert("Account deleted successfully.");
-                window.location.href = "/logginn";  // Redirect to login
+                window.location.href = "/logginn";  // Redirect 
             } else {
                 alert(data.error || "Failed to delete account.");
             }

@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 //DL
 const router = express.Router();
-
+//sjekker om det er en bruker med samme email i databasen
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -19,7 +19,7 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ error: "Invalid email or password." });
     }
 
-    // Verify password
+    // Verify password med bcrypt
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
       return res.status(400).json({ error: "Invalid email or password." });
