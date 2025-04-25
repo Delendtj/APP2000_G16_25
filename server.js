@@ -8,6 +8,8 @@ const mongoose = require("mongoose");
 const cors = require("cors"); 
 const next = require("next"); 
 const router = require("./module/auth");
+const path = require("path");
+const fs = require("fs"); // File system module for file operations
 
 // Check if environment is dev or prod
 const dev = process.env.NODE_ENV !== "production";
@@ -29,6 +31,7 @@ const tournamentscreateRoute = require('./module/tournaments');
 const coursesroute = require('./module/coursesRoute');
 const holeRoute = require('./module/holeRoute');
 const editpage = require('./module/clubPage'); // 
+const uploadPath = path.join(__dirname, 'uploadsmulter');
 
 // Prepare Next.js start Express server
 app.prepare().then(() => {
@@ -96,6 +99,36 @@ app.prepare().then(() => {
     }
 });
 
+
+server.get('/downloadpdf/:filename', (req, res) => {
+  const { filename } = req.params;
+  const filePath = path.join(__dirname, 'uploadsmulter', filename);
+  
+  // Sjekk om filen eksisterer
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).send('Fil ikke funnet');
+  }
+  
+  // Sett header for nedlasting
+  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+  res.setHeader('Content-Type', 'application/pdf');
+  
+  // Send filen
+  res.sendFile(filePath);
+});
+
+
+server.get("/api/users", async (req, res) => {
+  try {
+      const users = await User.find({}, "-passwordhash"); // Exclude passwordhash 
+      return res.status(200).json(users);
+  } catch (error) {
+      console.error("Error fetching users:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
 server.use('/api', updateProfileRoute);
 server.use('/api', deleteProfileRoute);
 server.use('/api', KlubbRouter);
@@ -110,16 +143,7 @@ server.use('/api', tournamentscreateRoute);
 server.use('/api', holeRoute);
 server.use('/api', coursesroute);
 server.use('/api', editpage);
-
-server.get("/api/users", async (req, res) => {
-  try {
-      const users = await User.find({}, "-passwordhash"); // Exclude passwordhash 
-      return res.status(200).json(users);
-  } catch (error) {
-      console.error("Error fetching users:", error);
-      return res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+server.use('/uploadsmulter', express.static(uploadPath));
 
 
 server.use("/api", router); 

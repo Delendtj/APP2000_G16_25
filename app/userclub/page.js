@@ -104,7 +104,15 @@ export default function UserClubPage() {
       }
 
       const pdfData = await response.json();
-      setPdfs(pdfData);
+      
+      // Konverter relative URL-er til absolutte URL-er
+      const pdfsWithAbsoluteUrls = pdfData.map(pdf => ({
+        ...pdf,
+        // Bruk filnavnet fra den opprinnelige URL-en
+        url: `${baseUrl}/downloadpdf/${pdf.url.split('/').pop()}`
+      }));
+      
+      setPdfs(pdfsWithAbsoluteUrls);
     } catch (error) {
       console.error('Error fetching PDFs:', error);
     }
@@ -180,8 +188,9 @@ export default function UserClubPage() {
                     target="_blank" 
                     rel="noopener noreferrer"
                     style={styles.documentLink}
+                    download={pdf.name}
                   >
-                    {pdf.name}
+                    <span style={styles.documentName}>{pdf.name}</span>
                   </a>
                 </li>
               ))}
@@ -287,6 +296,13 @@ const styles = {
     textDecoration: 'none',
     fontWeight: '500',
     display: 'block',
+  },
+  documentName: {
+    marginRight: '10px',
+  },
+  downloadIcon: {
+    fontSize: '14px',
+    color: '#666',
   },
   tournamentList: {
     listStyle: 'none',
