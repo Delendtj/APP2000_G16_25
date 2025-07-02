@@ -53,6 +53,15 @@ const handleSubmit = async (e) => {
             <Head>
                 <title>Om Discgolf</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8DNT2NRQ6B"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-8DNT2NRQ6B');
+</script>
             </Head>
 
             <Header/>
