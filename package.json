@@ -10,13 +10,13 @@
     "heroku-postbuild": "cd app && npm install && npm run build"
   },
   "engines": {
-    "node": "18.x"
+    "node": "22.x"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "dotenv": "^16.5.0",
+    "dotenv": "^16.6.1",
     "express": "^4.21.2",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
