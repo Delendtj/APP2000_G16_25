@@ -8,7 +8,7 @@ NODE_ENV=development
 
 localhost:5000
 
-MONGODB_URI='mongodb+srv://admin:admin1@cluster0.wqcxd.mongodb.net/Disgolfdb'
+MONGODB_URI='mongodb+srvmongodb.net/Disgolfdb'
 
 
 Kjør:
